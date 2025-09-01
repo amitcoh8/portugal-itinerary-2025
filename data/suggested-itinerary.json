@@ -1,7 +1,6 @@
 [
   {
     "area": "Lisbon",
-    "description": "Alfama rooftops & river sunset - Ease into Lisbon with classic viewpoints over Alfama, then roll through Belém's icons before a night in Bairro Alto.",
     "items": [
       {
         "nameLocal": "Miradouro de Santa Luzia",
@@ -42,7 +41,6 @@
   },
   {
     "area": "Sintra/Cascais",
-    "description": "Sintra coast: cliffs, coves & a seaside town - A coastal day from Sintra's wild headland to a hidden cove and a chic seaside town.",
     "items": [
       {
         "nameLocal": "Praia da Ursa",
@@ -76,7 +74,6 @@
   },
   {
     "area": "Ericeira",
-    "description": "World Surfing Reserve highlights - Hop between Ericeira's signature coves and surf lookouts, then sunset drinks.",
     "items": [
       {
         "nameLocal": "Praia da Ribeira d'Ilhas",
@@ -105,13 +102,7 @@
         "link": "https://www.google.com/maps/search/Bee+Moinho+Ericeira",
         "summary": "Boutique windmill stay above town (optional).",
         "category": "accommodation"
-      }
-    ]
-  },
-  {
-    "area": "Ericeira",
-    "description": "Wind & waves near Cascais - A quick run down the coast to one of Portugal's most dramatic ocean beaches, then back to Ericeira for a seafood feast.",
-    "items": [
+      },
       {
         "nameLocal": "Praia do Guincho",
         "nameEn": "Guincho Beach",
@@ -123,7 +114,6 @@
   },
   {
     "area": "Peniche/Nazaré",
-    "description": "Peniche to Nazaré, surf royalty - Peniche's wave mecca and lighthouse vistas, then Nazaré's legendary big-wave lookout.",
     "items": [
       {
         "nameLocal": "Cabo Carvoeiro",
@@ -159,13 +149,7 @@
         "link": "https://www.google.com/maps/search/Praia+do+Banco+do+Cavalinho",
         "summary": "Quiet cove near Peniche, off the main drag (optional).",
         "category": "beach"
-      }
-    ]
-  },
-  {
-    "area": "Peniche/Nazaré",
-    "description": "Viewpoints & sheltered bay - A northbound day of viewpoints and calm water.",
-    "items": [
+      },
       {
         "nameLocal": "Monte de São Bartolomeu",
         "nameEn": "St. Bartholomew Hill",
@@ -191,7 +175,6 @@
   },
   {
     "area": "Douro Valley",
-    "description": "Transition to the Douro Valley (EN222 scenic drive) - Leave the coast for vine-covered hills. Arrive by mid-afternoon for a winery visit and a riverfront sunset.",
     "items": [
       {
         "nameLocal": "Estrada Nacional 222",
@@ -213,13 +196,7 @@
         "link": "https://www.google.com/maps/search/Quinta+das+Carvalhas",
         "summary": "Panoramic vineyard walks & tastings.",
         "category": "winery"
-      }
-    ]
-  },
-  {
-    "area": "Douro Valley",
-    "description": "Douro viewpoints & river life - A gentle day of terraces, viewpoints, and a rabelo-boat atmosphere in Pinhão.",
-    "items": [
+      },
       {
         "nameLocal": "Miradouro de São Leonardo de Galafura",
         "nameEn": "Galafura Viewpoint",
@@ -247,13 +224,7 @@
         "link": "https://www.google.com/maps/search/Miradouro+de+Casal+de+Loivos",
         "summary": "Overlook of the famous river bend.",
         "category": "view"
-      }
-    ]
-  },
-  {
-    "area": "Douro Valley",
-    "description": "Hike & baroque steps - From waterfalls to wide staircases, a day with a little sweat and a lot of views.",
-    "items": [
+      },
       {
         "nameLocal": "Trilho das Fisgas de Ermelo (PR3)",
         "nameEn": "Ermelo Waterfall Trail",
@@ -272,7 +243,6 @@
   },
   {
     "area": "Madeira",
-    "description": "Fly to Madeira (Funchal evening) - Morning transfer → flight to Funchal. Evening stroll, seafood dinner.",
     "items": [
       {
         "nameLocal": "Mercado dos Lavradores",
@@ -280,13 +250,7 @@
         "link": "https://www.google.com/maps/search/Mercado+dos+Lavradores+Funchal",
         "summary": "Exotic fruit & flower stalls; lively first taste of Madeira.",
         "category": "market"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "East: the Dragon's Tail & golden-sand finish - Coastal hiking on the São Lourenço peninsula, then a black-sand cove and a golden-sand town beach.",
-    "items": [
+      },
       {
         "nameLocal": "Vereda da Ponta de São Lourenço (PR8)",
         "nameEn": "",
@@ -314,13 +278,7 @@
         "link": "https://www.google.com/maps/search/Praia+de+Machico",
         "summary": "Golden sand & gentle water to wind down.",
         "category": "beach"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Peaks above the clouds - Sunrise at a drive-up peak and a rewarding hike to Madeira's highest summit.",
-    "items": [
+      },
       {
         "nameLocal": "Pico do Arieiro",
         "nameEn": "Sunrise Peak",
@@ -341,19 +299,6 @@
         "link": "https://www.google.com/maps/search/Pico+Ruivo",
         "summary": "Summit panorama over jagged ridgelines.",
         "category": "hike"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Funchal & Monte classics - City day: market flavors, cable car to tropical gardens, and the famous wicker toboggan ride.",
-    "items": [
-      {
-        "nameLocal": "Mercado dos Lavradores",
-        "nameEn": "Farmers' Market",
-        "link": "https://www.google.com/maps/search/Mercado+dos+Lavradores+Funchal",
-        "summary": "Tropical fruit tastings & flower stalls.",
-        "category": "market"
       },
       {
         "nameLocal": "Teleférico do Funchal",
@@ -382,13 +327,7 @@
         "link": "https://www.google.com/maps/search/S%C3%A9+Catedral+do+Funchal",
         "summary": "16th-century Gothic church.",
         "category": "monument"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Northwest: high plateau to lava pools - A greatest-hits loop: mountain plateau, enchanted laurel forest, and Atlantic rock pools.",
-    "items": [
+      },
       {
         "nameLocal": "Miradouro da Bica da Cana",
         "nameEn": "Plateau Viewpoint",
@@ -430,13 +369,7 @@
         "link": "https://www.google.com/maps/search/Miradouro+do+V%C3%A9u+da+Noiva",
         "summary": "Waterfall spilling to the sea.",
         "category": "waterfall"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Southwest: beaches & roadside waterfall - Sun-soaked south coast drive with unique waterfall stops and a sunset lighthouse.",
-    "items": [
+      },
       {
         "nameLocal": "Praia da Calheta",
         "nameEn": "Calheta Beach",
@@ -464,13 +397,7 @@
         "link": "https://www.google.com/maps/search/Farol+da+Ponta+do+Pargo",
         "summary": "Westernmost sunset on the island.",
         "category": "view"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Levadas & skywalk - Madeira's famous levada hike day, finishing with a glass skywalk.",
-    "items": [
+      },
       {
         "nameLocal": "Levada das 25 Fontes e Risco (PR6)",
         "nameEn": "",
@@ -491,12 +418,25 @@
         "link": "https://www.google.com/maps/search/Cabo+Gir%C3%A3o+Skywalk",
         "summary": "Glass platform on 580 m sea cliffs.",
         "category": "view"
+      },
+      {
+        "nameLocal": "Blandy's Wine Lodge",
+        "nameEn": "Madeira Wine Cellar",
+        "link": "https://www.google.com/maps/search/Blandy%E2%80%99s+Wine+Lodge",
+        "summary": "History of Madeira wine & tastings.",
+        "category": "winery"
+      },
+      {
+        "nameLocal": "Aeroporto da Madeira Cristiano Ronaldo",
+        "nameEn": "Madeira Airport",
+        "link": "https://www.google.com/maps/search/Aeroporto+da+Madeira+Cristiano+Ronaldo",
+        "summary": "20 min from Funchal; rental car return.",
+        "category": "transport"
       }
     ]
   },
   {
     "area": "Porto Santo",
-    "description": "Flex / Porto Santo (weather-dependent) - Optional island hop for 9 km of golden sand and remote tide pools at low tide.",
     "items": [
       {
         "nameLocal": "Piscinas Naturais do Porto das Salemas",
@@ -518,32 +458,6 @@
         "link": "https://www.google.com/maps/search/Vila+Baleira+Porto+Santo",
         "summary": "Cafés & low-key strolls.",
         "category": "town"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Relax & souvenirs - Last full day to revisit favorites, sip a poncha, and shop for keepsakes in Zona Velha. Optional wine tasting.",
-    "items": [
-      {
-        "nameLocal": "Blandy's Wine Lodge",
-        "nameEn": "Madeira Wine Cellar",
-        "link": "https://www.google.com/maps/search/Blandy%E2%80%99s+Wine+Lodge",
-        "summary": "History of Madeira wine & tastings.",
-        "category": "winery"
-      }
-    ]
-  },
-  {
-    "area": "Madeira",
-    "description": "Departure - Return rental car and catch your flight from Madeira's Cristiano Ronaldo Airport.",
-    "items": [
-      {
-        "nameLocal": "Aeroporto da Madeira Cristiano Ronaldo",
-        "nameEn": "Madeira Airport",
-        "link": "https://www.google.com/maps/search/Aeroporto+da+Madeira+Cristiano+Ronaldo",
-        "summary": "20 min from Funchal; rental car return.",
-        "category": "transport"
       }
     ]
   }
