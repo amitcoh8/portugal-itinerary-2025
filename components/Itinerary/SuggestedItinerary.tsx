@@ -2,7 +2,6 @@ import React from "react";
 import type { SuggestedCategory, SuggestedDay, SuggestedItem, TripConfig } from "@/src/types";
 import { loadTripConfig, loadSuggestedDays } from "@/src/config";
 import { getVisitedPlaces, toggleVisitedPlace } from "@/src/utils";
-import { getCurrentLocation, calculateDistance, geocodePlaceBrowser, type Coordinates } from "@/src/geocoding";
 
 function formatDate(dateString: string) {
   const d = new Date(dateString);
@@ -32,6 +31,7 @@ function getGenericImage(category: SuggestedCategory): string {
   };
   return genericImages[category] || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&auto=format";
 }
+
 function getCategoryIcon(category: SuggestedCategory) {
   const icons: Record<SuggestedCategory, string> = {
     hike: "🥾",
@@ -63,10 +63,7 @@ export default function SuggestedItinerary() {
   const [imageByKey, setImageByKey] = React.useState<Record<string, string>>({});
   const [loading, setLoading] = React.useState(true);
   const [visitedPlaces, setVisitedPlaces] = React.useState<Set<string>>(new Set());
-  const [userLocation, setUserLocation] = React.useState<Coordinates | null>(null);
   const [locationGroups, setLocationGroups] = React.useState<LocationGroup[]>([]);
-  const [coordsLoading, setCoordsLoading] = React.useState<Set<string>>(new Set());
-  const [coordsFailed, setCoordsFailed] = React.useState<Set<string>>(new Set());
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({});
 
   React.useEffect(() => {
@@ -93,19 +90,7 @@ export default function SuggestedItinerary() {
     setVisitedPlaces(getVisitedPlaces());
   }, []);
 
-  // Get user's current location
-  React.useEffect(() => {
-    getCurrentLocation().then(location => {
-      if (location) {
-        setUserLocation(location);
-        console.log('User location obtained:', location);
-      } else {
-        console.warn('Could not get user location - will use original order');
-      }
-    });
-  }, []);
-
-  // Group and sort data by location and distance
+  // Group data by location
   React.useEffect(() => {
     if (days.length === 0) return;
 
@@ -120,7 +105,7 @@ export default function SuggestedItinerary() {
       groupsByArea.get(area)!.push(day);
     }
 
-    // Convert to location groups and sort items by category, distance
+    // Convert to location groups
     const groups: LocationGroup[] = Array.from(groupsByArea.entries()).map(([area, areaDays]) => {
       // Collect all items with metadata
       const allItems: (SuggestedItem & { dayDescription?: string })[] = [];
@@ -134,22 +119,10 @@ export default function SuggestedItinerary() {
         }
       }
 
-      // Sort items by category, then distance (if available), then name
+      // Sort items by category, then name
       allItems.sort((a, b) => {
         const categoryCompare = a.category.localeCompare(b.category);
         if (categoryCompare !== 0) return categoryCompare;
-
-        if (userLocation) {
-          const aHasCoords = !!a.coordinates;
-          const bHasCoords = !!b.coordinates;
-          if (aHasCoords && bHasCoords) {
-            const distanceA = calculateDistance(userLocation, a.coordinates!);
-            const distanceB = calculateDistance(userLocation, b.coordinates!);
-            if (distanceA !== distanceB) return distanceA - distanceB;
-          } else if (aHasCoords !== bHasCoords) {
-            return aHasCoords ? -1 : 1;
-          }
-        }
 
         const nameA = a.nameLocal || a.nameEn || "";
         const nameB = b.nameLocal || b.nameEn || "";
@@ -163,10 +136,8 @@ export default function SuggestedItinerary() {
       };
     });
 
-    // Maintain group order by first appearance (no explicit sorting)
-
     setLocationGroups(groups);
-  }, [days, userLocation]);
+  }, [days]);
 
   // Toggle visited status for a place
   const handleToggleVisited = (placeId: string, event: React.MouseEvent) => {
@@ -241,82 +212,12 @@ export default function SuggestedItinerary() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [days, config]);
 
-  // Client-side geocoding to enrich items without coordinates
-  React.useEffect(() => {
-    if (!days.length) return;
-
-    let cancelled = false;
-
-    (async () => {
-      for (const day of days) {
-        for (const item of day.items) {
-          if (item.coordinates) continue;
-
-          const ttlMs = 30 * 24 * 60 * 60 * 1000; // 30 days
-          const cacheKey = `coords:${encodeURIComponent(item.link || item.nameLocal)}`;
-          const cached = localStorage.getItem(cacheKey);
-          if (cached) {
-            try {
-              const parsed = JSON.parse(cached) as { lat: number; lng: number; ts?: number };
-              if (parsed.lat && parsed.lng && parsed.ts && (Date.now() - parsed.ts) < ttlMs) {
-                item.coordinates = { lat: parsed.lat, lng: parsed.lng };
-                continue;
-              } else {
-                localStorage.removeItem(cacheKey);
-              }
-            } catch {
-              localStorage.removeItem(cacheKey);
-            }
-          }
-
-          // mark loading
-          setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
-          setCoordsLoading(prev => new Set(prev).add(cacheKey));
-
-          const coords = await geocodePlaceBrowser(item.nameLocal);
-          if (!coords && item.nameEn) {
-            const coordsEn = await geocodePlaceBrowser(item.nameEn);
-            if (coordsEn) {
-              item.coordinates = coordsEn;
-              localStorage.setItem(cacheKey, JSON.stringify({ ...coordsEn, ts: Date.now() }));
-              setCoordsLoading(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
-              continue;
-            }
-          }
-          if (coords) {
-            item.coordinates = coords;
-            localStorage.setItem(cacheKey, JSON.stringify({ ...coords, ts: Date.now() }));
-            setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
-          } else {
-            // mark failure for this key
-            setCoordsFailed(prev => new Set(prev).add(cacheKey));
-          }
-          // unmark loading
-          setCoordsLoading(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
-
-          if (cancelled) return;
-        }
-      }
-      // trigger re-grouping after enrichment
-      setDays((prev) => [...prev]);
-    })();
-
-    return () => { cancelled = true; };
-  }, [days]);
-
   if (loading) {
     return <div className="flex justify-center py-8"><div className="text-gray-500">Loading suggested activities...</div></div>;
   }
 
   return (
     <div className="space-y-10">
-      {/* Location permission message */}
-      {!userLocation && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800 text-sm">
-          💡 Allow location access to sort attractions by distance from your current position
-        </div>
-      )}
-
       {locationGroups.map((group) => (
         <section key={group.area} className="break-inside-avoid-page">
           {/* Location header */}
@@ -324,9 +225,6 @@ export default function SuggestedItinerary() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{group.area}</h1>
             <div className="text-gray-500 text-sm">
               {group.days.length} day{group.days.length !== 1 ? 's' : ''} • {group.allItems.length} attractions
-              {userLocation && (
-                <span className="ml-2 text-green-600">📍 Sections by type; inside each, sorted by distance from you</span>
-              )}
             </div>
           </div>
 
@@ -347,16 +245,6 @@ export default function SuggestedItinerary() {
                   const isOpen = !!openSections[sectionKey];
 
                   const sortedItems = [...items].sort((a, b) => {
-                    if (userLocation) {
-                      const aHas = !!a.coordinates; const bHas = !!b.coordinates;
-                      if (aHas && bHas) {
-                        const da = calculateDistance(userLocation, a.coordinates!);
-                        const db = calculateDistance(userLocation, b.coordinates!);
-                        if (da !== db) return da - db;
-                      } else if (aHas !== bHas) {
-                        return aHas ? -1 : 1;
-                      }
-                    }
                     const nameA = a.nameLocal || a.nameEn || "";
                     const nameB = b.nameLocal || b.nameEn || "";
                     return nameA.localeCompare(nameB);
@@ -383,12 +271,6 @@ export default function SuggestedItinerary() {
                             const key = it.link;
                             const imageUrl = it.image ?? imageByKey[key];
                             const isVisited = visitedPlaces.has(it.link);
-                            const cacheKey = `coords:${encodeURIComponent(it.link || it.nameLocal)}`;
-                            const isCoordsLoading = coordsLoading.has(cacheKey);
-                            const isCoordsFailed = coordsFailed.has(cacheKey);
-                            const distance = userLocation && it.coordinates 
-                              ? calculateDistance(userLocation, it.coordinates) 
-                              : null;
 
                             return (
                               <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
@@ -438,24 +320,6 @@ export default function SuggestedItinerary() {
                                           {it.nameLocal}
                                           {it.nameEn ? ` – ${it.nameEn}` : ""}
                                         </p>
-                                        <div className="flex items-center gap-2 text-gray-500">
-                                          {isCoordsLoading && (
-                                            <span className="text-xs inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded animate-pulse">
-                                              <span className="inline-block h-2 w-2 rounded-full bg-gray-300"></span>
-                                              <span>Locating…</span>
-                                            </span>
-                                          )}
-                                          {distance && !isCoordsLoading && (
-                                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                              {distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}
-                                            </span>
-                                          )}
-                                          {!isCoordsLoading && isCoordsFailed && !it.coordinates && (
-                                            <span className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded border border-amber-200">
-                                              Location missing
-                                            </span>
-                                          )}
-                                        </div>
                                       </div>
                                       <p className="text-gray-600 text-sm mt-1">{it.summary}</p>
                                       {/* Bottom-right category tag */}
