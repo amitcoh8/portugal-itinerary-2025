@@ -392,6 +392,27 @@
         "category": "view"
       },
       {
+        "nameLocal": "Piscinas Naturais do Porto das Salemas",
+        "nameEn": "Tide Pools",
+        "link": "https://www.google.com/maps/search/Porto+das+Salemas",
+        "summary": "Remote, best at low tide.",
+        "category": "pool"
+      },
+      {
+        "nameLocal": "Praia do Porto Santo",
+        "nameEn": "Main Beach",
+        "link": "https://www.google.com/maps/search/Praia+do+Porto+Santo",
+        "summary": "9 km of soft golden sand.",
+        "category": "beach"
+      },
+      {
+        "nameLocal": "Vila Baleira",
+        "nameEn": "Porto Santo town",
+        "link": "https://www.google.com/maps/search/Vila+Baleira+Porto+Santo",
+        "summary": "Cafés & low-key strolls.",
+        "category": "town"
+      },
+      {
         "nameLocal": "Farol da Ponta do Pargo",
         "nameEn": "Lighthouse",
         "link": "https://www.google.com/maps/search/Farol+da+Ponta+do+Pargo",
@@ -432,32 +453,6 @@
         "link": "https://www.google.com/maps/search/Aeroporto+da+Madeira+Cristiano+Ronaldo",
         "summary": "20 min from Funchal; rental car return.",
         "category": "transport"
-      }
-    ]
-  },
-  {
-    "area": "Porto Santo",
-    "items": [
-      {
-        "nameLocal": "Piscinas Naturais do Porto das Salemas",
-        "nameEn": "Tide Pools",
-        "link": "https://www.google.com/maps/search/Porto+das+Salemas",
-        "summary": "Remote, best at low tide.",
-        "category": "pool"
-      },
-      {
-        "nameLocal": "Praia do Porto Santo",
-        "nameEn": "Main Beach",
-        "link": "https://www.google.com/maps/search/Praia+do+Porto+Santo",
-        "summary": "9 km of soft golden sand.",
-        "category": "beach"
-      },
-      {
-        "nameLocal": "Vila Baleira",
-        "nameEn": "Porto Santo town",
-        "link": "https://www.google.com/maps/search/Vila+Baleira+Porto+Santo",
-        "summary": "Cafés & low-key strolls.",
-        "category": "town"
       }
     ]
   }

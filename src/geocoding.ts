@@ -143,3 +143,31 @@ export async function getCurrentLocation(): Promise<Coordinates | null> {
     );
   });
 }
+
+export async function getCurrentLocationFresh(): Promise<Coordinates | null> {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      console.warn('Geolocation is not supported by this browser');
+      resolve(null);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      },
+      (error) => {
+        console.warn('Error getting fresh current location:', error);
+        resolve(null);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 0
+      }
+    );
+  });
+}

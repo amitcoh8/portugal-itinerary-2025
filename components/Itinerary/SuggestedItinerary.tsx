@@ -2,7 +2,7 @@ import React from "react";
 import type { SuggestedCategory, SuggestedDay, SuggestedItem, TripConfig } from "@/src/types";
 import { loadTripConfig, loadSuggestedDays } from "@/src/config";
 import { getVisitedPlaces, toggleVisitedPlace } from "@/src/utils";
-import { geocodePlaceBrowser, type Coordinates, calculateDistance, getCurrentLocation } from "@/src/geocoding";
+import { geocodePlaceBrowser, type Coordinates, calculateDistance, getCurrentLocation, getCurrentLocationFresh } from "@/src/geocoding";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -114,7 +114,7 @@ export default function SuggestedItinerary() {
   const [openAreas, setOpenAreas] = React.useState<Record<string, boolean>>({});
   const [coordsByItem, setCoordsByItem] = React.useState<Record<string, Coordinates | null | false>>({});
   const [currentLocation, setCurrentLocation] = React.useState<Coordinates | null>(null);
-  const triedFallbackRef = React.useRef(false);
+  const [currentLocationSource, setCurrentLocationSource] = React.useState<'gps' | null>(null);
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -142,26 +142,12 @@ export default function SuggestedItinerary() {
       if (loc) {
         console.log('Current location detected:', loc);
         setCurrentLocation(loc);
+        setCurrentLocationSource('gps');
       } else {
-        console.log('Geolocation failed, will use fallback');
+        console.log('Geolocation not available or denied');
       }
     })();
   }, []);
-
-  // Fallback: geocode main region if geolocation not available/denied
-  React.useEffect(() => {
-    if (currentLocation || triedFallbackRef.current === true) return;
-    if (!config) return;
-    triedFallbackRef.current = true;
-    const region = (config.regionHints?.mainRegion || "Portugal").trim();
-    (async () => {
-      const fallback = await geocodePlaceBrowser(region);
-      if (fallback) {
-        console.log('Using fallback location:', fallback);
-        setCurrentLocation(fallback);
-      }
-    })();
-  }, [currentLocation, config]);
 
   // Load visited places from localStorage
   React.useEffect(() => {
@@ -271,7 +257,16 @@ export default function SuggestedItinerary() {
 
   const toggleCategoryOpen = (area: string, category: SuggestedCategory) => {
     const key = `${area}:${category}`;
+    const isOpening = !openSections[key];
     setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
+    if (isOpening) {
+      getCurrentLocationFresh().then((loc) => {
+        if (loc) {
+          setCurrentLocation(loc);
+          setCurrentLocationSource('gps');
+        }
+      });
+    }
   };
 
   const toggleAreaOpen = (area: string) => {
@@ -428,15 +423,9 @@ export default function SuggestedItinerary() {
                                       Failed to locate
                                     </div>
                                   )}
-                                  {currentLocation && coordStatus && (
+                                  {currentLocation && currentLocationSource === 'gps' && coordStatus && (
                                     <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
                                       {`${calculateDistance(currentLocation, coordStatus).toFixed(1)}km`}
-                                      <div className="text-[10px] text-gray-500">
-                                        You: {currentLocation.lat.toFixed(3)}, {currentLocation.lng.toFixed(3)}
-                                      </div>
-                                      <div className="text-[10px] text-gray-500">
-                                        Place: {coordStatus.lat.toFixed(3)}, {coordStatus.lng.toFixed(3)}
-                                      </div>
                                     </div>
                                   )}
                                   {/* Visited toggle button */}
