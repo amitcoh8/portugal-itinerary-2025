@@ -4,16 +4,6 @@ import { loadTripConfig, loadSuggestedDays } from "@/src/config";
 import { getVisitedPlaces, toggleVisitedPlace } from "@/src/utils";
 import { getCurrentLocation, calculateDistance, geocodePlaceBrowser, type Coordinates } from "@/src/geocoding";
 
-function formatDate(dateString: string) {
-  const d = new Date(dateString);
-  return d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
-}
-
-function formatWeekday(dateString: string) {
-  const d = new Date(dateString);
-  return d.toLocaleDateString("en-US", { weekday: "long" });
-}
-
 function getGenericImage(category: SuggestedCategory): string {
   const genericImages: Record<SuggestedCategory, string> = {
     hike: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&h=300&fit=crop&auto=format",
@@ -43,7 +33,7 @@ function getCategoryIcon(category: SuggestedCategory) {
     monument: "🏛️",
     activity: "⚡",
     pool: "🏊",
-    waterfall: "💧",
+    waterfall: "💦",
     garden: "🌸",
     market: "🛍️",
     transport: "🚗",
@@ -64,9 +54,11 @@ export default function SuggestedItinerary() {
   const [loading, setLoading] = React.useState(true);
   const [visitedPlaces, setVisitedPlaces] = React.useState<Set<string>>(new Set());
   const [userLocation, setUserLocation] = React.useState<Coordinates | null>(null);
+  const [userLocationStatus, setUserLocationStatus] = React.useState<'loading' | 'success' | 'failed'>('loading');
   const [locationGroups, setLocationGroups] = React.useState<LocationGroup[]>([]);
   const [coordsLoading, setCoordsLoading] = React.useState<Set<string>>(new Set());
   const [coordsFailed, setCoordsFailed] = React.useState<Set<string>>(new Set());
+  const [expandedCats, setExpandedCats] = React.useState<Set<string>>(new Set());
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -97,8 +89,10 @@ export default function SuggestedItinerary() {
     getCurrentLocation().then(location => {
       if (location) {
         setUserLocation(location);
+        setUserLocationStatus('success');
         console.log('User location obtained:', location);
       } else {
+        setUserLocationStatus('failed');
         console.warn('Could not get user location - will use original order');
       }
     });
@@ -251,19 +245,26 @@ export default function SuggestedItinerary() {
           const cached = localStorage.getItem(cacheKey);
           if (cached) {
             try {
-              const parsed = JSON.parse(cached) as { lat: number; lng: number; ts?: number };
-              if (parsed.lat && parsed.lng && parsed.ts && (Date.now() - parsed.ts) < ttlMs) {
+              const parsed = JSON.parse(cached) as { lat?: number; lng?: number; ts?: number; notFound?: boolean };
+              const isFresh = parsed?.ts && (Date.now() - parsed.ts) < ttlMs;
+              if (isFresh && parsed.lat && parsed.lng) {
                 item.coordinates = { lat: parsed.lat, lng: parsed.lng };
+                setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
                 continue;
-              } else {
-                localStorage.removeItem(cacheKey);
               }
+              if (isFresh && parsed.notFound) {
+                setCoordsFailed(prev => new Set(prev).add(cacheKey));
+                // do not attempt network if negative cached
+                continue;
+              }
+              // stale or invalid
+              localStorage.removeItem(cacheKey);
             } catch {
               localStorage.removeItem(cacheKey);
             }
           }
 
-          // mark loading
+          // mark loading for network attempt
           setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
           setCoordsLoading(prev => new Set(prev).add(cacheKey));
 
@@ -282,7 +283,8 @@ export default function SuggestedItinerary() {
             localStorage.setItem(cacheKey, JSON.stringify({ ...coords, ts: Date.now() }));
             setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
           } else {
-            // mark failure for this key
+            // mark failure for this key and persist negative cache
+            localStorage.setItem(cacheKey, JSON.stringify({ notFound: true, ts: Date.now() }));
             setCoordsFailed(prev => new Set(prev).add(cacheKey));
           }
           // unmark loading
@@ -324,99 +326,148 @@ export default function SuggestedItinerary() {
             </div>
           </div>
 
-          {/* Items sorted by category, then distance */}
-          <ul className="space-y-3">
-            {group.allItems.map((it) => {
-              const key = it.link;
-              const imageUrl = it.image ?? imageByKey[key];
-              const isVisited = visitedPlaces.has(it.link);
-              const cacheKey = `coords:${encodeURIComponent(it.link || it.nameLocal)}`;
-              const isCoordsLoading = coordsLoading.has(cacheKey);
-              const isCoordsFailed = coordsFailed.has(cacheKey);
-              const distance = userLocation && it.coordinates 
-                ? calculateDistance(userLocation, it.coordinates) 
-                : null;
-
-              return (
-                <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
-                  {/* Visited toggle button */}
-                  <button
-                    onClick={(e) => handleToggleVisited(it.link, e)}
-                    className={`absolute top-2 left-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all z-10 shadow-sm ${
-                      isVisited 
-                        ? 'bg-green-500 border-green-500 text-white' 
-                        : 'bg-white border-gray-300 hover:border-green-400 hover:bg-green-50'
-                    }`}
-                    title={isVisited ? 'Mark as not visited' : 'Mark as visited'}
-                  >
-                    {isVisited && (
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </button>
-
-                  <a
-                    href={it.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`block p-4 hover:bg-gray-50 transition-colors group ${isVisited ? 'filter grayscale-[0.3]' : ''}`}
-                  >
-                    <div className="flex gap-4">
-                      <div className="w-28 h-20 flex-shrink-0 bg-gray-100 rounded-md relative">
-                        <img
-                          src={imageUrl || getGenericImage(it.category)}
-                          alt={it.nameLocal}
-                          className={`w-full h-full object-cover rounded-md ${isVisited ? 'filter grayscale-[0.5]' : ''}`}
-                          loading="lazy"
-                        />
-                        {!imageUrl && (
-                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs px-1 py-0.5 rounded-b-md">
-                            <span className="block text-center text-[10px] leading-tight">Placeholder</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-3">
-                          <p
-                            className="text-gray-900 font-medium group-hover:underline truncate"
-                            title={it.nameEn ? `${it.nameLocal} – ${it.nameEn}` : it.nameLocal}
-                          >
-                            {it.nameLocal}
-                            {it.nameEn ? ` – ${it.nameEn}` : ""}
-                          </p>
-                          <div className="flex items-center gap-2 text-gray-500">
-                            {isCoordsLoading && (
-                              <span className="text-xs inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded animate-pulse">
-                                <span className="inline-block h-2 w-2 rounded-full bg-gray-300"></span>
-                                <span>Locating…</span>
-                              </span>
-                            )}
-                            {distance && !isCoordsLoading && (
-                              <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                {distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}
-                              </span>
-                            )}
-                            {!isCoordsLoading && isCoordsFailed && !it.coordinates && (
-                              <span className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded border border-amber-200">
-                                Location missing
-                              </span>
-                            )}
-                          </div>
+          {/* Items grouped by category, categories alphabetical, collapsed by default */}
+          {(() => {
+            const itemsByCategory = new Map<string, (SuggestedItem & { dayDescription?: string })[]>();
+            for (const it of group.allItems) {
+              const list = itemsByCategory.get(it.category) || [];
+              list.push(it);
+              itemsByCategory.set(it.category, list);
+            }
+            const categories = Array.from(itemsByCategory.keys()).sort((a, b) => a.localeCompare(b));
+            return (
+              <div className="space-y-4">
+                {categories.map((cat) => {
+                  const catKey = `${group.area}::${cat}`;
+                  const isOpen = expandedCats.has(catKey);
+                  const items = itemsByCategory.get(cat) || [];
+                  return (
+                    <div key={cat} className="">
+                      <button
+                        onClick={() => {
+                          setExpandedCats((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(catKey)) next.delete(catKey); else next.add(catKey);
+                            return next;
+                          });
+                        }}
+                        className="w-full flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100 transition-colors"
+                        aria-expanded={isOpen}
+                        aria-controls={catKey}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl">{getCategoryIcon(cat as any)}</span>
+                          <span className="capitalize font-medium text-gray-900">{cat}</span>
+                          <span className="text-xs text-gray-500">({items.length})</span>
                         </div>
-                        <p className="text-gray-600 text-sm mt-1">{it.summary}</p>
-                        {/* Bottom-right category tag */}
-                        <div className="absolute bottom-2 right-4 flex items-center gap-2 text-gray-500">
-                          <span className="text-lg">{getCategoryIcon(it.category)}</span>
-                          <span className="text-sm capitalize">{it.category}</span>
-                        </div>
-                      </div>
+                        <span className="text-gray-500 text-sm">{isOpen ? '−' : '+'}</span>
+                      </button>
+                      {isOpen && (
+                        <ul id={catKey} className="space-y-3 mt-3">
+                          {items.map((it) => {
+                            const key = it.link;
+                            const imageUrl = (it as any).image ?? imageByKey[key];
+                            const isVisited = visitedPlaces.has(it.link);
+                            const cacheKey = `coords:${encodeURIComponent(it.link || it.nameLocal)}`;
+                            const isCoordsLoading = coordsLoading.has(cacheKey);
+                            const isCoordsFailed = coordsFailed.has(cacheKey);
+                            const distance = userLocation && it.coordinates 
+                              ? calculateDistance(userLocation, it.coordinates) 
+                              : null;
+                            return (
+                              <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
+                                <button
+                                  onClick={(e) => handleToggleVisited(it.link, e)}
+                                  className={`absolute top-2 left-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all z-10 shadow-sm ${
+                                    isVisited 
+                                      ? 'bg-green-500 border-green-500 text-white' 
+                                      : 'bg-white border-gray-300 hover:border-green-400 hover:bg-green-50'
+                                  }`}
+                                  title={isVisited ? 'Mark as not visited' : 'Mark as visited'}
+                                >
+                                  {isVisited && (
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                  )}
+                                </button>
+                                <a
+                                  href={it.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`block p-4 hover:bg-gray-50 transition-colors group ${isVisited ? 'filter grayscale-[0.3]' : ''}`}
+                                >
+                                  <div className="flex gap-4">
+                                    <div className="w-28 h-20 flex-shrink-0 bg-gray-100 rounded-md relative">
+                                      <img
+                                        src={imageUrl || getGenericImage(it.category as SuggestedCategory)}
+                                        alt={it.nameLocal}
+                                        className={`w-full h-full object-cover rounded-md ${isVisited ? 'filter grayscale-[0.5]' : ''}`}
+                                        loading="lazy"
+                                      />
+                                      {!imageUrl && (
+                                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs px-1 py-0.5 rounded-b-md">
+                                          <span className="block text-center text-[10px] leading-tight">Placeholder</span>
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center justify-between gap-3">
+                                        <p
+                                          className="text-gray-900 font-medium group-hover:underline truncate"
+                                          title={it.nameEn ? `${it.nameLocal} – ${it.nameEn}` : it.nameLocal}
+                                        >
+                                          {it.nameLocal}
+                                          {it.nameEn ? ` – ${it.nameEn}` : ''}
+                                        </p>
+                                        <div className="flex items-center gap-2 text-gray-500">
+                                          {(
+                                            userLocationStatus === 'loading' ||
+                                            (userLocationStatus !== 'failed' && (
+                                              isCoordsLoading || (!it.coordinates && !isCoordsFailed)
+                                            ))
+                                          ) && (
+                                            <span className="text-xs inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded animate-pulse">
+                                              <span className="inline-block h-2 w-2 rounded-full bg-gray-300"></span>
+                                              <span>Locating…</span>
+                                            </span>
+                                          )}
+                                          {distance !== null && userLocationStatus === 'success' && !isCoordsLoading && (
+                                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                              {distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}
+                                            </span>
+                                          )}
+                                          {userLocationStatus === 'failed' && !isCoordsLoading && distance === null && (
+                                            <span className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded border border-amber-200">
+                                              Failed to get your location
+                                            </span>
+                                          )}
+                                          {userLocationStatus === 'success' && !isCoordsLoading && isCoordsFailed && !it.coordinates && (
+                                            <span className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded border border-amber-200">
+                                              Location missing
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <p className="text-gray-600 text-sm mt-1">{it.summary}</p>
+                                      <div className="absolute bottom-2 right-4 flex items-center gap-2 text-gray-500">
+                                        <span className="text-lg">{getCategoryIcon(it.category as any)}</span>
+                                        <span className="text-sm capitalize">{it.category}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
                     </div>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </section>
       ))}
     </div>
