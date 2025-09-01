@@ -71,10 +71,11 @@ export type SuggestedItem = {
   summary: string;
   category: SuggestedCategory;
   image?: string;
+  coordinates?: { lat: number; lng: number };
 };
 
 export type SuggestedDay = {
-  date: string;
+  date?: string;
   area?: string;
   description?: string;
   items: SuggestedItem[];

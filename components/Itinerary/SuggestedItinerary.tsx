@@ -1,7 +1,8 @@
 import React from "react";
 import type { SuggestedCategory, SuggestedDay, SuggestedItem, TripConfig } from "@/src/types";
-import { loadTripConfig, loadSuggestedDays, getRegionForDate } from "@/src/config";
+import { loadTripConfig, loadSuggestedDays } from "@/src/config";
 import { getVisitedPlaces, toggleVisitedPlace } from "@/src/utils";
+import { getCurrentLocation, calculateDistance, geocodePlaceBrowser, type Coordinates } from "@/src/geocoding";
 
 function formatDate(dateString: string) {
   const d = new Date(dateString);
@@ -50,12 +51,22 @@ function getCategoryIcon(category: SuggestedCategory) {
   return icons[category] || "📍";
 }
 
+type LocationGroup = {
+  area: string;
+  days: SuggestedDay[];
+  allItems: (SuggestedItem & { dayDescription?: string })[];
+};
+
 export default function SuggestedItinerary() {
   const [days, setDays] = React.useState<SuggestedDay[]>([]);
   const [config, setConfig] = React.useState<TripConfig | null>(null);
   const [imageByKey, setImageByKey] = React.useState<Record<string, string>>({});
   const [loading, setLoading] = React.useState(true);
   const [visitedPlaces, setVisitedPlaces] = React.useState<Set<string>>(new Set());
+  const [userLocation, setUserLocation] = React.useState<Coordinates | null>(null);
+  const [locationGroups, setLocationGroups] = React.useState<LocationGroup[]>([]);
+  const [coordsLoading, setCoordsLoading] = React.useState<Set<string>>(new Set());
+  const [coordsFailed, setCoordsFailed] = React.useState<Set<string>>(new Set());
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -65,9 +76,7 @@ export default function SuggestedItinerary() {
           loadSuggestedDays()
         ]);
         setConfig(configData);
-        const sortedDays = [...suggestedData].sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
+        const sortedDays = [...suggestedData];
         setDays(sortedDays);
       } catch (error) {
         console.error("Failed to load configuration or suggested activities:", error);
@@ -83,6 +92,81 @@ export default function SuggestedItinerary() {
     setVisitedPlaces(getVisitedPlaces());
   }, []);
 
+  // Get user's current location
+  React.useEffect(() => {
+    getCurrentLocation().then(location => {
+      if (location) {
+        setUserLocation(location);
+        console.log('User location obtained:', location);
+      } else {
+        console.warn('Could not get user location - will use original order');
+      }
+    });
+  }, []);
+
+  // Group and sort data by location and distance
+  React.useEffect(() => {
+    if (days.length === 0) return;
+
+    // Group days by area
+    const groupsByArea = new Map<string, SuggestedDay[]>();
+    
+    for (const day of days) {
+      const area = day.area || 'Other';
+      if (!groupsByArea.has(area)) {
+        groupsByArea.set(area, []);
+      }
+      groupsByArea.get(area)!.push(day);
+    }
+
+    // Convert to location groups and sort items by category, distance
+    const groups: LocationGroup[] = Array.from(groupsByArea.entries()).map(([area, areaDays]) => {
+      // Collect all items with metadata
+      const allItems: (SuggestedItem & { dayDescription?: string })[] = [];
+      
+      for (const day of areaDays) {
+        for (const item of day.items) {
+          allItems.push({
+            ...item,
+            dayDescription: day.description
+          });
+        }
+      }
+
+      // Sort items by category, then distance (if available), then name
+      allItems.sort((a, b) => {
+        const categoryCompare = a.category.localeCompare(b.category);
+        if (categoryCompare !== 0) return categoryCompare;
+
+        if (userLocation) {
+          const aHasCoords = !!a.coordinates;
+          const bHasCoords = !!b.coordinates;
+          if (aHasCoords && bHasCoords) {
+            const distanceA = calculateDistance(userLocation, a.coordinates!);
+            const distanceB = calculateDistance(userLocation, b.coordinates!);
+            if (distanceA !== distanceB) return distanceA - distanceB;
+          } else if (aHasCoords !== bHasCoords) {
+            return aHasCoords ? -1 : 1;
+          }
+        }
+
+        const nameA = a.nameLocal || a.nameEn || "";
+        const nameB = b.nameLocal || b.nameEn || "";
+        return nameA.localeCompare(nameB);
+      });
+
+      return {
+        area,
+        days: areaDays,
+        allItems
+      };
+    });
+
+    // Maintain group order by first appearance (no explicit sorting)
+
+    setLocationGroups(groups);
+  }, [days, userLocation]);
+
   // Toggle visited status for a place
   const handleToggleVisited = (placeId: string, event: React.MouseEvent) => {
     event.preventDefault();
@@ -91,11 +175,10 @@ export default function SuggestedItinerary() {
     setVisitedPlaces(new Set(updatedVisited));
   };
 
-  function buildSearchQuery(item: SuggestedItem, dateISO: string): string {
+  function buildSearchQuery(item: SuggestedItem): string {
     if (!config) return [item.nameLocal, item.nameEn, item.category].filter(Boolean).join(" ");
     
-    const regionHint = getRegionForDate(dateISO, config);
-    const parts = [item.nameLocal, item.nameEn, regionHint, item.category];
+    const parts = [item.nameLocal, item.nameEn, item.category];
     return parts.filter(Boolean).join(" ");
   }
 
@@ -127,12 +210,13 @@ export default function SuggestedItinerary() {
     let cancelled = false;
     (async () => {
       const tasks: Array<Promise<void>> = [];
-      for (const day of days) {
+      for (let dayIndex = 0; dayIndex < days.length; dayIndex++) {
+        const day = days[dayIndex];
         for (const item of day.items) {
           if (item.image) continue;
-          const key = `${day.date}-${item.link}`;
+          const key = item.link;
           if (imageByKey[key]) continue;
-          const q = buildSearchQuery(item, day.date);
+          const q = buildSearchQuery(item);
           tasks.push(
             (async () => {
               const url = await fetchWikipediaImage(q);
@@ -151,36 +235,108 @@ export default function SuggestedItinerary() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [days, config]);
 
+  // Client-side geocoding to enrich items without coordinates
+  React.useEffect(() => {
+    if (!days.length) return;
+
+    let cancelled = false;
+
+    (async () => {
+      for (const day of days) {
+        for (const item of day.items) {
+          if (item.coordinates) continue;
+
+          const ttlMs = 30 * 24 * 60 * 60 * 1000; // 30 days
+          const cacheKey = `coords:${encodeURIComponent(item.link || item.nameLocal)}`;
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            try {
+              const parsed = JSON.parse(cached) as { lat: number; lng: number; ts?: number };
+              if (parsed.lat && parsed.lng && parsed.ts && (Date.now() - parsed.ts) < ttlMs) {
+                item.coordinates = { lat: parsed.lat, lng: parsed.lng };
+                continue;
+              } else {
+                localStorage.removeItem(cacheKey);
+              }
+            } catch {
+              localStorage.removeItem(cacheKey);
+            }
+          }
+
+          // mark loading
+          setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
+          setCoordsLoading(prev => new Set(prev).add(cacheKey));
+
+          const coords = await geocodePlaceBrowser(item.nameLocal);
+          if (!coords && item.nameEn) {
+            const coordsEn = await geocodePlaceBrowser(item.nameEn);
+            if (coordsEn) {
+              item.coordinates = coordsEn;
+              localStorage.setItem(cacheKey, JSON.stringify({ ...coordsEn, ts: Date.now() }));
+              setCoordsLoading(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
+              continue;
+            }
+          }
+          if (coords) {
+            item.coordinates = coords;
+            localStorage.setItem(cacheKey, JSON.stringify({ ...coords, ts: Date.now() }));
+            setCoordsFailed(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
+          } else {
+            // mark failure for this key
+            setCoordsFailed(prev => new Set(prev).add(cacheKey));
+          }
+          // unmark loading
+          setCoordsLoading(prev => { const next = new Set(prev); next.delete(cacheKey); return next; });
+
+          if (cancelled) return;
+        }
+      }
+      // trigger re-grouping after enrichment
+      setDays((prev) => [...prev]);
+    })();
+
+    return () => { cancelled = true; };
+  }, [days]);
+
   if (loading) {
     return <div className="flex justify-center py-8"><div className="text-gray-500">Loading suggested activities...</div></div>;
   }
 
   return (
     <div className="space-y-10">
-      {days.map((day) => (
-        <section id={`date-${day.date}`} key={day.date} className="break-inside-avoid-page">
-          <div className="mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">{formatDate(day.date)}</h2>
-            <div className="flex items-center gap-2 text-gray-500">
-              <p>{formatWeekday(day.date)}</p>
-              {day.area && (
-                <>
-                  <span>•</span>
-                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                    {day.area}
-                  </span>
-                </>
+      {/* Location permission message */}
+      {!userLocation && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800 text-sm">
+          💡 Allow location access to sort attractions by distance from your current position
+        </div>
+      )}
+
+      {locationGroups.map((group) => (
+        <section key={group.area} className="break-inside-avoid-page">
+          {/* Location header */}
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{group.area}</h1>
+            <div className="text-gray-500 text-sm">
+              {group.days.length} day{group.days.length !== 1 ? 's' : ''} • {group.allItems.length} attractions
+              {userLocation && (
+                <span className="ml-2 text-green-600">📍 Sorted by type, then distance from you</span>
               )}
             </div>
-            {day.description && (
-              <p className="text-gray-700 mt-2 text-sm leading-relaxed">{day.description}</p>
-            )}
           </div>
+
+          {/* Items sorted by category, then distance */}
           <ul className="space-y-3">
-            {day.items.map((it) => {
-              const key = `${day.date}-${it.link}`;
+            {group.allItems.map((it) => {
+              const key = it.link;
               const imageUrl = it.image ?? imageByKey[key];
               const isVisited = visitedPlaces.has(it.link);
+              const cacheKey = `coords:${encodeURIComponent(it.link || it.nameLocal)}`;
+              const isCoordsLoading = coordsLoading.has(cacheKey);
+              const isCoordsFailed = coordsFailed.has(cacheKey);
+              const distance = userLocation && it.coordinates 
+                ? calculateDistance(userLocation, it.coordinates) 
+                : null;
+
               return (
                 <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
                   {/* Visited toggle button */}
@@ -199,6 +355,7 @@ export default function SuggestedItinerary() {
                       </svg>
                     )}
                   </button>
+
                   <a
                     href={it.link}
                     target="_blank"
@@ -229,11 +386,30 @@ export default function SuggestedItinerary() {
                             {it.nameEn ? ` – ${it.nameEn}` : ""}
                           </p>
                           <div className="flex items-center gap-2 text-gray-500">
-                            <span className="text-lg">{getCategoryIcon(it.category)}</span>
-                            <span className="text-sm capitalize">{it.category}</span>
+                            {isCoordsLoading && (
+                              <span className="text-xs inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded animate-pulse">
+                                <span className="inline-block h-2 w-2 rounded-full bg-gray-300"></span>
+                                <span>Locating…</span>
+                              </span>
+                            )}
+                            {distance && !isCoordsLoading && (
+                              <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                {distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}
+                              </span>
+                            )}
+                            {!isCoordsLoading && isCoordsFailed && !it.coordinates && (
+                              <span className="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded border border-amber-200">
+                                Location missing
+                              </span>
+                            )}
                           </div>
                         </div>
                         <p className="text-gray-600 text-sm mt-1">{it.summary}</p>
+                        {/* Bottom-right category tag */}
+                        <div className="absolute bottom-2 right-4 flex items-center gap-2 text-gray-500">
+                          <span className="text-lg">{getCategoryIcon(it.category)}</span>
+                          <span className="text-sm capitalize">{it.category}</span>
+                        </div>
                       </div>
                     </div>
                   </a>
