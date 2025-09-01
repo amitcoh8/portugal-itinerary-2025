@@ -111,6 +111,7 @@ export default function SuggestedItinerary() {
   const [visitedPlaces, setVisitedPlaces] = React.useState<Set<string>>(new Set());
   const [locationGroups, setLocationGroups] = React.useState<LocationGroup[]>([]);
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({});
+  const [openAreas, setOpenAreas] = React.useState<Record<string, boolean>>({});
   const [coordsByItem, setCoordsByItem] = React.useState<Record<string, Coordinates | null | false>>({});
   const [currentLocation, setCurrentLocation] = React.useState<Coordinates | null>(null);
   const triedFallbackRef = React.useRef(false);
@@ -138,7 +139,12 @@ export default function SuggestedItinerary() {
   React.useEffect(() => {
     (async () => {
       const loc = await getCurrentLocation();
-      if (loc) setCurrentLocation(loc);
+      if (loc) {
+        console.log('Current location detected:', loc);
+        setCurrentLocation(loc);
+      } else {
+        console.log('Geolocation failed, will use fallback');
+      }
     })();
   }, []);
 
@@ -150,7 +156,10 @@ export default function SuggestedItinerary() {
     const region = (config.regionHints?.mainRegion || "Portugal").trim();
     (async () => {
       const fallback = await geocodePlaceBrowser(region);
-      if (fallback) setCurrentLocation(fallback);
+      if (fallback) {
+        console.log('Using fallback location:', fallback);
+        setCurrentLocation(fallback);
+      }
     })();
   }, [currentLocation, config]);
 
@@ -265,6 +274,10 @@ export default function SuggestedItinerary() {
     setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const toggleAreaOpen = (area: string) => {
+    setOpenAreas(prev => ({ ...prev, [area]: !prev[area] }));
+  };
+
   function buildSearchQuery(item: SuggestedItem): string {
     if (!config) return [item.nameLocal, item.nameEn, item.category].filter(Boolean).join(" ");
     
@@ -330,147 +343,170 @@ export default function SuggestedItinerary() {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-0">
       {locationGroups.map((group) => (
-        <section key={group.area} className="break-inside-avoid-page">
+        <section key={group.area} className="break-inside-avoid-page bg-gray-50 rounded-2xl p-3">
           {/* Location header */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{group.area}</h1>
-            <div className="text-gray-500 text-sm">
-              {group.days.length} day{group.days.length !== 1 ? 's' : ''} • {group.allItems.length} attractions
+          <button
+            onClick={() => toggleAreaOpen(group.area)}
+            className="w-full mb-6 text-left"
+            aria-expanded={!!openAreas[group.area]}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-8 bg-blue-500 rounded-full"></div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{group.area}</h1>
+                  <div className="text-gray-500 text-sm">
+                    {group.days.length} day{group.days.length !== 1 ? 's' : ''} • {group.allItems.length} attractions
+                  </div>
+                </div>
+              </div>
+              <span className="text-gray-500 text-2xl leading-none">{openAreas[group.area] ? '−' : '+'}</span>
             </div>
-          </div>
+          </button>
 
           {/* Category foldable sections */}
-          {(() => {
-            const itemsByCategory = new Map<SuggestedCategory, (SuggestedItem & { dayDescription?: string })[]>();
-            for (const it of group.allItems) {
-              const arr = itemsByCategory.get(it.category as SuggestedCategory) || [];
-              arr.push(it);
-              itemsByCategory.set(it.category as SuggestedCategory, arr);
-            }
-            const categories = Array.from(itemsByCategory.entries()).sort(([a], [b]) => a.localeCompare(b));
+          <div className={`overflow-hidden transition-all duration-200 ease-in-out ${openAreas[group.area] ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+            {(() => {
+              const itemsByCategory = new Map<SuggestedCategory, (SuggestedItem & { dayDescription?: string })[]>();
+              for (const it of group.allItems) {
+                const arr = itemsByCategory.get(it.category as SuggestedCategory) || [];
+                arr.push(it);
+                itemsByCategory.set(it.category as SuggestedCategory, arr);
+              }
+              const categories = Array.from(itemsByCategory.entries()).sort(([a], [b]) => a.localeCompare(b));
 
-            return (
-              <div className="space-y-3">
-                {categories.map(([category, items]) => {
-                  const sectionKey = `${group.area}:${category}`;
-                  const isOpen = !!openSections[sectionKey];
+              return (
+                <div className="space-y-4 ml-4 border-l-2 border-gray-100 pl-6">
+                  {categories.map(([category, items]) => {
+                    const sectionKey = `${group.area}:${category}`;
+                    const isOpen = !!openSections[sectionKey];
 
-                  const sortedItems = [...items].sort((a, b) => {
-                    const nameA = a.nameLocal || a.nameEn || "";
-                    const nameB = b.nameLocal || b.nameEn || "";
-                    return nameA.localeCompare(nameB);
-                  });
+                    const sortedItems = [...items].sort((a, b) => {
+                      const nameA = a.nameLocal || a.nameEn || "";
+                      const nameB = b.nameLocal || b.nameEn || "";
+                      return nameA.localeCompare(nameB);
+                    });
 
-                  return (
-                    <div key={sectionKey}>
-                      <button
-                        onClick={() => toggleCategoryOpen(group.area, category)}
-                        className="w-full rounded-xl border border-gray-200 bg-white shadow-sm p-4 flex items-center justify-between hover:bg-gray-50"
-                        aria-expanded={isOpen}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl">{getCategoryIcon(category)}</span>
-                          <span className="text-lg font-medium capitalize">{category}</span>
-                          <span className="text-gray-500 text-sm">({items.length})</span>
-                        </div>
-                        <span className="text-gray-500 text-xl leading-none">{isOpen ? '−' : '+'}</span>
-                      </button>
+                    return (
+                      <div key={sectionKey} className="relative">
+                        <button
+                          onClick={() => toggleCategoryOpen(group.area, category)}
+                          className="w-full rounded-xl border border-gray-200 bg-white shadow-sm p-4 flex items-center justify-between hover:bg-gray-50 relative"
+                          aria-expanded={isOpen}
+                        >
+                          {/* Visual connector line */}
+                          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-3 h-0.5 bg-gray-300"></div>
+                          
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl">{getCategoryIcon(category)}</span>
+                            <span className="text-lg font-medium capitalize">{category}</span>
+                            <span className="text-gray-500 text-sm">({items.length})</span>
+                          </div>
+                          <span className="text-gray-500 text-xl leading-none">{isOpen ? '−' : '+'}</span>
+                        </button>
 
-                      {isOpen && (
-                        <ul className="mt-3 space-y-3">
-                          {sortedItems.map((it) => {
-                            const key = it.link;
-                            const imageUrl = it.image ?? imageByKey[key];
-                            const isVisited = visitedPlaces.has(it.link);
-                            const coordStatus = coordsByItem[key];
+                        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                          <ul className="mt-3 space-y-3 ml-4 border-l border-gray-200 pl-4">
+                            {sortedItems.map((it) => {
+                              const key = it.link;
+                              const imageUrl = it.image ?? imageByKey[key];
+                              const isVisited = visitedPlaces.has(it.link);
+                              const coordStatus = coordsByItem[key];
 
-                            return (
-                              <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
-                                {/* Distance/Status pill (top-right) */}
-                                {coordStatus === null && (
-                                  <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
-                                    Locating…
-                                  </div>
-                                )}
-                                {coordStatus === false && (
-                                  <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
-                                    Failed to locate
-                                  </div>
-                                )}
-                                {currentLocation && coordStatus && (
-                                  <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
-                                    {`${calculateDistance(currentLocation, coordStatus).toFixed(1)}km`}
-                                  </div>
-                                )}
-                                {/* Visited toggle button */}
-                                <button
-                                  onClick={(e) => handleToggleVisited(it.link, e)}
-                                  className={`absolute top-2 left-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all z-10 shadow-sm ${
-                                    isVisited 
-                                      ? 'bg-green-500 border-green-500 text-white' 
-                                      : 'bg-white border-gray-300 hover:border-green-400 hover:bg-green-50'
-                                  }`}
-                                  title={isVisited ? 'Mark as not visited' : 'Mark as visited'}
-                                >
-                                  {isVisited && (
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
+                              return (
+                                <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
+                                  {/* Distance/Status pill (top-right) */}
+                                  {coordStatus === null && (
+                                    <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
+                                      Locating…
+                                    </div>
                                   )}
-                                </button>
+                                  {coordStatus === false && (
+                                    <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
+                                      Failed to locate
+                                    </div>
+                                  )}
+                                  {currentLocation && coordStatus && (
+                                    <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
+                                      {`${calculateDistance(currentLocation, coordStatus).toFixed(1)}km`}
+                                      <div className="text-[10px] text-gray-500">
+                                        You: {currentLocation.lat.toFixed(3)}, {currentLocation.lng.toFixed(3)}
+                                      </div>
+                                      <div className="text-[10px] text-gray-500">
+                                        Place: {coordStatus.lat.toFixed(3)}, {coordStatus.lng.toFixed(3)}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {/* Visited toggle button */}
+                                  <button
+                                    onClick={(e) => handleToggleVisited(it.link, e)}
+                                    className={`absolute top-2 left-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all z-10 shadow-sm ${
+                                      isVisited 
+                                        ? 'bg-green-500 border-green-500 text-white' 
+                                        : 'bg-white border-gray-300 hover:border-green-400 hover:bg-green-50'
+                                    }`}
+                                    title={isVisited ? 'Mark as not visited' : 'Mark as visited'}
+                                  >
+                                    {isVisited && (
+                                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                      </svg>
+                                    )}
+                                  </button>
 
-                                <a
-                                  href={it.link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={`block p-4 hover:bg-gray-50 transition-colors group ${isVisited ? 'filter grayscale-[0.3]' : ''}`}
-                                >
-                                  <div className="flex gap-4">
-                                    <div className="w-28 h-20 flex-shrink-0 bg-gray-100 rounded-md relative">
-                                      <img
-                                        src={imageUrl || getGenericImage(it.category)}
-                                        alt={it.nameLocal}
-                                        className={`w-full h-full object-cover rounded-md ${isVisited ? 'filter grayscale-[0.5]' : ''}`}
-                                        loading="lazy"
-                                      />
-                                      {!imageUrl && (
-                                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs px-1 py-0.5 rounded-b-md">
-                                          <span className="block text-center text-[10px] leading-tight">Placeholder</span>
+                                  <a
+                                    href={it.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`block p-4 hover:bg-gray-50 transition-colors group ${isVisited ? 'filter grayscale-[0.3]' : ''}`}
+                                  >
+                                    <div className="flex gap-4">
+                                      <div className="w-28 h-20 flex-shrink-0 bg-gray-100 rounded-md relative">
+                                        <img
+                                          src={imageUrl || getGenericImage(it.category)}
+                                          alt={it.nameLocal}
+                                          className={`w-full h-full object-cover rounded-md ${isVisited ? 'filter grayscale-[0.5]' : ''}`}
+                                          loading="lazy"
+                                        />
+                                        {!imageUrl && (
+                                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs px-1 py-0.5 rounded-b-md">
+                                            <span className="block text-center text-[10px] leading-tight">Placeholder</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center justify-between gap-3">
+                                          <p
+                                            className="text-gray-900 font-medium group-hover:underline truncate"
+                                            title={it.nameEn ? `${it.nameLocal} – ${it.nameEn}` : it.nameLocal}
+                                          >
+                                            {it.nameLocal}
+                                            {it.nameEn ? ` – ${it.nameEn}` : ""}
+                                          </p>
                                         </div>
-                                      )}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center justify-between gap-3">
-                                        <p
-                                          className="text-gray-900 font-medium group-hover:underline truncate"
-                                          title={it.nameEn ? `${it.nameLocal} – ${it.nameEn}` : it.nameLocal}
-                                        >
-                                          {it.nameLocal}
-                                          {it.nameEn ? ` – ${it.nameEn}` : ""}
-                                        </p>
-                                      </div>
-                                      <p className="text-gray-600 text-sm mt-1">{it.summary}</p>
-                                      {/* Bottom-right category tag */}
-                                      <div className="absolute bottom-2 right-4 flex items-center gap-2 text-gray-500">
-                                        <span className="text-lg">{getCategoryIcon(it.category)}</span>
-                                        <span className="text-sm capitalize">{it.category}</span>
+                                        <p className="text-gray-600 text-sm mt-1">{it.summary}</p>
+                                        {/* Bottom-right category tag */}
+                                        <div className="absolute bottom-2 right-4 flex items-center gap-2 text-gray-500">
+                                          <span className="text-lg">{getCategoryIcon(it.category)}</span>
+                                          <span className="text-sm capitalize">{it.category}</span>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </a>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })()}
+                                  </a>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
         </section>
       ))}
     </div>

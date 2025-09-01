@@ -118,7 +118,7 @@ export default function TravelItinerary() {
         title={config?.tripName ?? "Travel Itinerary"}
         subtitle={config?.tripSubtitle ?? ""}
         progressPercent={progressPercent}
-        onGoToToday={goToToday}
+        onGoToToday={activeTab === 'booked' ? goToToday : undefined}
       />
 
       <main className="max-w-4xl mx-auto px-6 py-10">
