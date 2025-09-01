@@ -1,0 +1,78 @@
+[
+  {
+    "date": "2025-09-24",
+    "type": "flight",
+    "title": "Flight to Geneva",
+    "details": {
+      "departure": { "time": "16:40", "airport": "TLV", "terminal": "3" },
+      "arrival": { "time": "20:00", "airport": "GVA" },
+      "duration": "Evening arrival",
+      "operator": "Arkia",
+      "flight1": {
+        "route": "TLV → GVA",
+        "flight": "IZ523",
+        "departure": "16:40",
+        "arrival": "20:00"
+      }
+    }
+  },
+  {
+    "date": "2025-10-01",
+    "type": "stay",
+    "title": "Casa Aga - Cozy Seaside Apartment",
+    "location": "Ericeira",
+    "details": {
+      "dates": "Oct 1 – Oct 4",
+      "checkin": "Wed, Oct 1 - 4:00 PM",
+      "checkout": "Sat, Oct 4 - 11:00 AM",
+      "source": "booking.com"
+    },
+    "image": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/0bf3f9bbb_image.png"
+  },
+  {
+    "date": "2025-10-04",
+    "type": "stay",
+    "title": "Home in Atouguia da Baleia",
+    "location": "Rua da Liberdade 31",
+    "details": {
+      "checkin": "Sat, Oct 4 - 3:00 PM",
+      "checkout": "Mon, Oct 6 - 10:00 AM",
+      "source": "airbnb.com"
+    },
+    "image": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/dfa8e4364_image.png"
+  },
+  {
+    "date": "2025-10-06",
+    "type": "stay",
+    "title": "Home in Gondar",
+    "location": "Rua da Quinta do Peso",
+    "details": {
+      "checkin": "Mon, Oct 6 - 3:00 PM",
+      "checkout": "Thu, Oct 9 - 11:00 AM",
+      "source": "airbnb.com"
+    },
+    "image": "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/ab5803a60_image.png"
+  },
+  {
+    "date": "2025-10-18",
+    "type": "flight",
+    "title": "Connecting Flights Home",
+    "details": {
+      "flight1": {
+        "route": "Funchal Madeira → Prague",
+        "flight": "QS1171",
+        "departure": "16:40",
+        "arrival": "22:10",
+        "date": "18Oct2025"
+      },
+      "flight2": {
+        "route": "Prague → Tel Aviv",
+        "flight": "QS1286",
+        "departure": "23:45",
+        "arrival": "04:35",
+        "date": "18Oct2025 → 19Oct2025"
+      },
+      "operator": "SMARTWINGS"
+    }
+  }
+]

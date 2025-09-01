@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils';
 
 export type CardProps = React.HTMLAttributes<HTMLDivElement>;
 export function Card({ className, ...props }: CardProps) {

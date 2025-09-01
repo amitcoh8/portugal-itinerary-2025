@@ -1,0 +1,178 @@
+[
+  {
+    "date": "2025-09-30",
+    "description": "Explore Lisbon's iconic viewpoints and historic monuments in Alfama and Belém, ending with nightlife in Bairro Alto.",
+    "items": [
+      { "nameLocal": "Miradouro de Santa Luzia", "nameEn": "Santa Luzia Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+de+Santa+Luzia", "summary": "Classic tiled viewpoint over Alfama rooftops.", "category": "view" },
+      { "nameLocal": "Miradouro da Senhora do Monte", "nameEn": "Senhora do Monte Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+da+Senhora+do+Monte", "summary": "Panoramic Lisbon skyline, best at sunset.", "category": "view" },
+      { "nameLocal": "Mosteiro dos Jerónimos", "nameEn": "Jerónimos Monastery", "link": "https://www.google.com/maps/search/Mosteiro+dos+Jerónimos", "summary": "UNESCO Gothic monastery, ornate cloisters.", "category": "monument" },
+      { "nameLocal": "Torre de Belém", "nameEn": "Belém Tower", "link": "https://www.google.com/maps/search/Torre+de+Belém", "summary": "Iconic fortress on the Tagus River.", "category": "monument" },
+      { "nameLocal": "Bairro Alto", "nameEn": "Bairro Alto district", "link": "https://www.google.com/maps/search/Bairro+Alto+Lisboa", "summary": "Narrow streets full of bars & nightlife.", "category": "town" }
+    ]
+  },
+  {
+    "date": "2025-10-01",
+    "description": "Journey to Europe's westernmost point and discover hidden beaches along the stunning Portuguese coast.",
+    "items": [
+      { "nameLocal": "Cabo da Roca", "nameEn": "Cape Roca", "link": "https://www.google.com/maps/search/Cabo+da+Roca", "summary": "Westernmost point of Europe, dramatic cliffs.", "category": "view" },
+      { "nameLocal": "Praia da Ursa", "nameEn": "Ursa Beach", "link": "https://www.google.com/maps/search/Praia+da+Ursa", "summary": "Hidden wild beach with sea stacks (steep hike down).", "category": "beach" },
+      { "nameLocal": "Cascais", "nameEn": "seaside town", "link": "https://www.google.com/maps/search/Cascais", "summary": "Elegant beach town with marina & old town.", "category": "town" },
+      { "nameLocal": "Praia do Sul, Ericeira", "nameEn": "Sul Beach", "link": "https://www.google.com/maps/search/Praia+do+Sul+Ericeira", "summary": "Central Ericeira beach, good for sunsets.", "category": "beach" }
+    ]
+  },
+  {
+    "date": "2025-10-02",
+    "description": "Immerse yourself in Ericeira's world-class surf culture with pristine beaches and oceanfront dining.",
+    "items": [
+      { "nameLocal": "Praia da Ribeira d'Ilhas", "nameEn": "Ribeira d'Ilhas Beach", "link": "https://www.google.com/maps/search/Praia+da+Ribeira+d'Ilhas", "summary": "World-class surf break & surf reserve.", "category": "beach" },
+      { "nameLocal": "Praia dos Coxos", "nameEn": "Coxos Beach", "link": "https://www.google.com/maps/search/Praia+dos+Coxos", "summary": "Rugged surf cove with natural rock pools.", "category": "beach" },
+      { "nameLocal": "Praia de Foz do Lizandro", "nameEn": "Lizandro River Beach", "link": "https://www.google.com/maps/search/Praia+de+Foz+do+Lizandro", "summary": "Sandy beach at river mouth, calmer water.", "category": "beach" },
+      { "nameLocal": "Sunset Bamboo Bar", "nameEn": "", "link": "https://www.google.com/maps/search/Sunset+Bamboo+Bar+Ericeira", "summary": "Oceanfront bar, great for cocktails at sunset.", "category": "food" }
+    ]
+  },
+  {
+    "date": "2025-10-03",
+    "description": "Experience the wild Atlantic coast at Guincho Beach and savor fresh seafood at local favorites.",
+    "items": [
+      { "nameLocal": "Praia do Guincho", "nameEn": "Guincho Beach", "link": "https://www.google.com/maps/search/Praia+do+Guincho", "summary": "Windswept surf beach near Cascais.", "category": "beach" },
+      { "nameLocal": "Marisqueira Furnas Ericeira", "nameEn": "seafood restaurant", "link": "https://www.google.com/maps/search/Marisqueira+Furnas+Ericeira", "summary": "Local spot famous for fresh fish & lobster.", "category": "food" }
+    ]
+  },
+  {
+    "date": "2025-10-04",
+    "description": "Discover legendary surf spots and witness giant wave culture from Peniche to Nazaré.",
+    "items": [
+      { "nameLocal": "Cabo Carvoeiro", "nameEn": "Carvoeiro Cape, Peniche", "link": "https://www.google.com/maps/search/Cabo+Carvoeiro", "summary": "Lighthouse & cliffs facing Berlengas Islands.", "category": "view" },
+      { "nameLocal": "Praia dos Supertubos", "nameEn": "Supertubos Beach", "link": "https://www.google.com/maps/search/Praia+dos+Supertubos", "summary": "Legendary surf spot with tubular waves.", "category": "beach" },
+      { "nameLocal": "Farol da Nazaré / Forte de São Miguel Arcanjo", "nameEn": "Nazaré Lighthouse", "link": "https://www.google.com/maps/search/Farol+da+Nazaré", "summary": "Big-wave lookout & surf museum.", "category": "view" },
+      { "nameLocal": "Ascensor da Nazaré", "nameEn": "Nazaré Funicular", "link": "https://www.google.com/maps/search/Ascensor+da+Nazaré", "summary": "Scenic cable car linking beach & Sítio clifftop.", "category": "transport" }
+    ]
+  },
+  {
+    "date": "2025-10-05",
+    "description": "Hike coastal hills, relax in sheltered bays, and explore historic Gothic monasteries.",
+    "items": [
+      { "nameLocal": "Monte de São Bartolomeu", "nameEn": "St. Bartholomew Hill", "link": "https://www.google.com/maps/search/Monte+de+São+Bartolomeu+Nazaré", "summary": "Short hike with 360° coastal & inland views.", "category": "hike" },
+      { "nameLocal": "Baía de São Martinho do Porto", "nameEn": "São Martinho Bay", "link": "https://www.google.com/maps/search/Baía+de+São+Martinho+do+Porto", "summary": "Sheltered shell-shaped bay, calm swimming.", "category": "beach" },
+      { "nameLocal": "Mosteiro de Alcobaça", "nameEn": "Alcobaça Monastery", "link": "https://www.google.com/maps/search/Mosteiro+de+Alcobaça", "summary": "Gothic abbey with royal tombs.", "category": "monument" }
+    ]
+  },
+  {
+    "date": "2025-10-06",
+    "description": "Begin your Douro Valley adventure with scenic drives and prestigious port wine estates.",
+    "items": [
+      { "nameLocal": "Estrada Nacional 222", "nameEn": "Régua to Pinhão Road", "link": "https://www.google.com/maps/search/Estrada+N222+Peso+da+Régua+Pinhão", "summary": "Scenic river road with terraced vineyards.", "category": "view" },
+      { "nameLocal": "Quinta do Bomfim", "nameEn": "winery", "link": "https://www.google.com/maps/search/Quinta+do+Bomfim", "summary": "Historic port estate, tours & tastings.", "category": "winery" },
+      { "nameLocal": "Quinta das Carvalhas", "nameEn": "winery", "link": "https://www.google.com/maps/search/Quinta+das+Carvalhas", "summary": "Panoramic vineyard walks & tastings.", "category": "winery" }
+    ]
+  },
+  {
+    "date": "2025-10-07",
+    "description": "Experience the heart of port wine country with panoramic viewpoints and riverside cruises in Pinhão.",
+    "items": [
+      { "nameLocal": "Miradouro de São Leonardo de Galafura", "nameEn": "Galafura Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+de+São+Leonardo+de+Galafura", "summary": "Classic Douro panorama praised by poet Torga.", "category": "view" },
+      { "nameLocal": "Quinta do Seixo (Sandeman)", "nameEn": "winery", "link": "https://www.google.com/maps/search/Quinta+do+Seixo+Sandeman", "summary": "Modern winery with sweeping views.", "category": "winery" },
+      { "nameLocal": "Cais de Pinhão", "nameEn": "Pinhão Pier", "link": "https://www.google.com/maps/search/Cais+de+Pinhão", "summary": "Start point for rabelo boat cruises.", "category": "transport" },
+      { "nameLocal": "Miradouro de Casal de Loivos", "nameEn": "Casal de Loivos Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+de+Casal+de+Loivos", "summary": "Overlooks Pinhão bend in the river.", "category": "view" }
+    ]
+  },
+  {
+    "date": "2025-10-08",
+    "description": "Adventure to Portugal's tallest waterfalls and climb the baroque steps of Lamego's sanctuary.",
+    "items": [
+      { "nameLocal": "Trilho das Fisgas de Ermelo (PR3)", "nameEn": "Ermelo Waterfall Trail", "link": "https://www.google.com/maps/search/Trilho+das+Fisgas+de+Ermelo", "summary": "10 km hike to Portugal's tallest cascades.", "category": "hike" },
+      { "nameLocal": "Santuário de Nossa Senhora dos Remédios", "nameEn": "Lamego Sanctuary", "link": "https://www.google.com/maps/search/Santuário+de+Nossa+Senhora+dos+Remédios+Lamego", "summary": "Baroque church with 686 steps.", "category": "monument" }
+    ]
+  },
+  {
+    "date": "2025-10-09",
+    "description": "Arrive in Madeira and discover the unique world of fortified Madeira wines in historic Funchal.",
+    "items": [
+      { "nameLocal": "Blandy's Wine Lodge", "nameEn": "Madeira Wine Cellar", "link": "https://www.google.com/maps/search/Blandy's+Wine+Lodge+Funchal", "summary": "Learn & taste Madeira fortified wines.", "category": "winery" }
+    ]
+  },
+  {
+    "date": "2025-10-10",
+    "description": "Explore Madeira's dramatic eastern peninsula with volcanic cliffs, hidden beaches, and coastal trails.",
+    "items": [
+      { "nameLocal": "Vereda da Ponta de São Lourenço (PR8)", "nameEn": "Dragon's Tail Hike", "link": "https://www.google.com/maps/search/Vereda+da+Ponta+de+São+Lourenço", "summary": "Coastal trail with volcanic cliffs & ocean views.", "category": "hike" },
+      { "nameLocal": "Miradouro da Ponta do Rosto", "nameEn": "Rosto Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+da+Ponta+do+Rosto", "summary": "Wide cliffside viewpoint over peninsula.", "category": "view" },
+      { "nameLocal": "Prainha do Caniçal", "nameEn": "Caniçal Natural Beach", "link": "https://www.google.com/maps/search/Prainha+do+Caniçal", "summary": "Small hidden black-sand cove.", "category": "beach" },
+      { "nameLocal": "Praia de Machico", "nameEn": "Machico Beach", "link": "https://www.google.com/maps/search/Praia+de+Machico", "summary": "Town beach with golden imported sand.", "category": "beach" }
+    ]
+  },
+  {
+    "date": "2025-10-11",
+    "description": "Conquer Madeira's highest peaks with sunrise views above the clouds and mountain hiking.",
+    "items": [
+      { "nameLocal": "Pico do Arieiro", "nameEn": "Sunrise Peak", "link": "https://www.google.com/maps/search/Pico+do+Arieiro", "summary": "Drive-up peak with sunrise above the clouds.", "category": "view" },
+      { "nameLocal": "Pico Ruivo", "nameEn": "Highest Peak", "link": "https://www.google.com/maps/search/Pico+Ruivo", "summary": "Madeira's highest mountain, 1862 m.", "category": "hike" },
+      { "nameLocal": "Achada do Teixeira", "nameEn": "Trailhead", "link": "https://www.google.com/maps/search/Achada+do+Teixeira", "summary": "Alternate shorter route to Pico Ruivo.", "category": "hike" }
+    ]
+  },
+  {
+    "date": "2025-10-12",
+    "description": "Immerse yourself in Funchal's culture with markets, gardens, and the famous Monte toboggan ride.",
+    "items": [
+      { "nameLocal": "Mercado dos Lavradores", "nameEn": "Farmers' Market", "link": "https://www.google.com/maps/search/Mercado+dos+Lavradores+Funchal", "summary": "Exotic fruits, spices & fish hall.", "category": "market" },
+      { "nameLocal": "Teleférico do Funchal", "nameEn": "Cable Car", "link": "https://www.google.com/maps/search/Teleférico+do+Funchal", "summary": "Scenic ride up to Monte.", "category": "transport" },
+      { "nameLocal": "Monte Palace Madeira", "nameEn": "Tropical Garden", "link": "https://www.google.com/maps/search/Monte+Palace+Madeira", "summary": "Exotic gardens & azulejo tiles.", "category": "garden" },
+      { "nameLocal": "Carreiros do Monte", "nameEn": "Toboggan Ride", "link": "https://www.google.com/maps/search/Carreiros+do+Monte", "summary": "Wicker basket sled ride downhill.", "category": "activity" },
+      { "nameLocal": "Sé Catedral do Funchal", "nameEn": "Cathedral", "link": "https://www.google.com/maps/search/Sé+Catedral+do+Funchal", "summary": "16th-century Gothic church.", "category": "monument" }
+    ]
+  },
+  {
+    "date": "2025-10-13",
+    "description": "Journey through Madeira's wild north coast with ancient forests, natural pools, and dramatic waterfalls.",
+    "items": [
+      { "nameLocal": "Miradouro da Bica da Cana", "nameEn": "Bica da Cana Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+da+Bica+da+Cana", "summary": "Plateau viewpoint above the clouds.", "category": "view" },
+      { "nameLocal": "Fanal Forest", "nameEn": "Laurissilva Forest", "link": "https://www.google.com/maps/search/Fanal+Forest+Madeira", "summary": "Misty UNESCO forest with ancient laurel trees.", "category": "hike" },
+      { "nameLocal": "Piscinas Naturais de Porto Moniz", "nameEn": "Natural Pools", "link": "https://www.google.com/maps/search/Piscinas+Naturais+de+Porto+Moniz", "summary": "Lava rock pools filled by the ocean.", "category": "pool" },
+      { "nameLocal": "Miradouro do Véu da Noiva", "nameEn": "Bride's Veil Waterfall", "link": "https://www.google.com/maps/search/Miradouro+do+Véu+da+Noiva", "summary": "Slender cascade off sea cliffs.", "category": "waterfall" },
+      { "nameLocal": "Praia do Porto do Seixal", "nameEn": "Seixal Beach", "link": "https://www.google.com/maps/search/Praia+do+Porto+do+Seixal", "summary": "Black-sand beach framed by cliffs.", "category": "beach" },
+      { "nameLocal": "Câmara de Lobos", "nameEn": "Fishing Village", "link": "https://www.google.com/maps/search/Câmara+de+Lobos", "summary": "Colorful boats & poncha bars.", "category": "town" }
+    ]
+  },
+  {
+    "date": "2025-10-14",
+    "description": "Discover Madeira's southwest coast with golden beaches, cascading waterfalls, and lighthouse sunsets.",
+    "items": [
+      { "nameLocal": "Praia da Calheta", "nameEn": "Calheta Beach", "link": "https://www.google.com/maps/search/Praia+da+Calheta", "summary": "Artificial golden-sand beach, calm waters.", "category": "beach" },
+      { "nameLocal": "Cascata dos Anjos", "nameEn": "Angels' Waterfall", "link": "https://www.google.com/maps/search/Cascata+dos+Anjos+Ponta+do+Sol", "summary": "Waterfall that falls onto the road.", "category": "waterfall" },
+      { "nameLocal": "Miradouro da Garganta Funda", "nameEn": "Garganta Funda Viewpoint", "link": "https://www.google.com/maps/search/Miradouro+da+Garganta+Funda", "summary": "Deep gorge with 140m waterfall.", "category": "view" },
+      { "nameLocal": "Farol da Ponta do Pargo", "nameEn": "Ponta do Pargo Lighthouse", "link": "https://www.google.com/maps/search/Farol+da+Ponta+do+Pargo", "summary": "Westernmost lighthouse, sunset spot.", "category": "view" }
+    ]
+  },
+  {
+    "date": "2025-10-15",
+    "description": "Experience Madeira's famous levada trail to magical waterfalls and Europe's highest sea cliff.",
+    "items": [
+      { "nameLocal": "Levada das 25 Fontes e Risco (PR6)", "nameEn": "", "link": "https://www.google.com/maps/search/Levada+das+25+Fontes+e+Risco", "summary": "Famous waterfall & spring-fed lagoon hike.", "category": "hike" },
+      { "nameLocal": "Rabaçal Nature Spot Café", "nameEn": "Trailhead", "link": "https://www.google.com/maps/search/Rabaçal+Nature+Spot+Café", "summary": "Shuttle & starting point for levadas.", "category": "hike" },
+      { "nameLocal": "Cabo Girão Skywalk", "nameEn": "", "link": "https://www.google.com/maps/search/Cabo+Girão+Skywalk", "summary": "Glass walkway on Europe's highest sea cliff.", "category": "view" }
+    ]
+  },
+  {
+    "date": "2025-10-16",
+    "description": "Escape to Porto Santo's golden sandy paradise and explore the peaceful neighboring island.",
+    "items": [
+      { "nameLocal": "Piscinas Naturais do Porto das Salemas", "nameEn": "Salemas Pools", "link": "https://www.google.com/maps/search/Piscinas+Naturais+do+Porto+das+Salemas", "summary": "Remote tide pools at low tide.", "category": "pool" },
+      { "nameLocal": "Praia do Porto Santo", "nameEn": "Porto Santo Beach", "link": "https://www.google.com/maps/search/Praia+do+Porto+Santo", "summary": "9 km long golden sand beach.", "category": "beach" },
+      { "nameLocal": "Vila Baleira", "nameEn": "Porto Santo town", "link": "https://www.google.com/maps/search/Vila+Baleira+Porto+Santo", "summary": "Small main town with cafes & shops.", "category": "town" }
+    ]
+  },
+  {
+    "date": "2025-10-17",
+    "description": "Enjoy your final day in Funchal's charming old town with colorful streets and souvenir shopping.",
+    "items": [
+      { "nameLocal": "Zona Velha, Funchal", "nameEn": "Old Town", "link": "https://www.google.com/maps/search/Zona+Velha+Funchal", "summary": "Painted doors, bars, and final souvenir shopping.", "category": "town" }
+    ]
+  },
+  {
+    "date": "2025-10-18",
+    "description": "Departure day - return rental car and catch your flight from Madeira's Cristiano Ronaldo Airport.",
+    "items": [
+      { "nameLocal": "Aeroporto da Madeira Cristiano Ronaldo", "nameEn": "Madeira Airport", "link": "https://www.google.com/maps/search/Aeroporto+da+Madeira+Cristiano+Ronaldo", "summary": "20 min from Funchal, rental car return.", "category": "transport" }
+    ]
+  }
+]

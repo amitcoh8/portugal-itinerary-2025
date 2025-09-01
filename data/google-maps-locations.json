@@ -1,0 +1,232 @@
+{
+  "locations": [
+    {
+      "name": "Restaurante Vila do Peixe",
+      "type": "Restaurant",
+      "rating": 4.3,
+      "reviews": 2496,
+      "price": "Moderately priced",
+      "category": "Seafood",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nphYtxbuQDjiS1joqN9G4F1UfJSJMZW59LKennPenGFIvj590hJQvN3-1eT8NJJQzZb9TGO8iBNAb69m8kfsZ66QXaMpwqEEY6VO2R9GdkEd37zrgJv2jsjSkRqmFKusjyOdPF6aNLfT-ht=w122-h92-k-no"
+    },
+    {
+      "name": "PR 1.2 Vereda do Pico Ruivo",
+      "type": "Hiking area",
+      "rating": 4.8,
+      "reviews": 4662,
+      "category": "Hiking area",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqzWVGKg2DXZ7XIB43VS81CqwNd7jqzot2dGpr2H_8SppYFe-7p0mSnYr794j9zZiOUdzBp5FcM0_9CYCldLY8gLNV_hWymMdcSWfQl66dNEeg3HgHqCIHiZrXfdPlnOT6KMFTg=w122-h92-k-no"
+    },
+    {
+      "name": "Praia do Banco do Cavalinho",
+      "type": "Beach",
+      "rating": 4.5,
+      "reviews": 74,
+      "category": "Public beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqO4rgbzNUBV4n3PTmo6N7JzIu4gkaSzIHB2rQdP0mwKTsobSnCWl1WHGEWTN5kU1fmVodGlABTJA-KC1AfWawKNddySeJ1tghpWDJfSVgFpMY-Ez5En99GJRL7-kxheqtmiew=w126-h92-k-no"
+    },
+    {
+      "name": "Praia da Ribeira D'Ilhas",
+      "type": "Beach",
+      "category": "Beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrW6KRdm1x-7PvYeGivjWI7Zlp4r_VRG2_4Hs-gKgmUp4Fpn3w102rbuTUOetRgM9-H_PJWi0Lv8PqKT-8NluhEBJhEqfas5SdkzCGOja23ZBWLypyTVH7FI3KVciQNKyb8hisH1w=w80-h106-k-no"
+    },
+    {
+      "name": "Praia dos Coxos",
+      "type": "Beach",
+      "rating": 4.5,
+      "reviews": 584,
+      "category": "Beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npz6AnqZ5OJW2mjqqyBfl658mIgdJtYapVQvv38Qq9qnXVDnwbi1QkNh_SuBxPOQRrWi9_5rekc2UF7tZUd8C8gZ4FVqCqcquummoUER97WD6fN2ScgaIs9Ua8H-WsVZiyqszDv=w122-h92-k-no"
+    },
+    {
+      "name": "Cascais",
+      "type": "City",
+      "category": "Portugal",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npo-HxE1wiuPecGNWsDEWWcPlhe-OXsbJ8xgwu0CFeXUsFSqPUURIA7B6IPwyHicML8qhdhMjVKULgXBn88CO5vRaBowUtTSzNsacJu7G0KkHjpz3pkwf0GSXoubeqb0hq4bjfb=w138-h92-k-no"
+    },
+    {
+      "name": "Bee Moinho",
+      "type": "Hotel",
+      "rating": 4.4,
+      "reviews": 12,
+      "category": "Lodging",
+      "image": "https://lh3.googleusercontent.com/p/AF1QipPH8Uy1Cnb8xpO4XU_saGB-MTiFtsSMPGqHFEg=w123-h92-k-no"
+    },
+    {
+      "name": "Farol da Nazaré",
+      "type": "Scenic spot",
+      "rating": 4.8,
+      "reviews": 14117,
+      "category": "Scenic spot",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqytoB33J80TrwRPgcxymElk6tEflCwmgS_k1w_WCvTrHouihpcCe8sxwCEkIymVQzmowDB7noKKo7NgjJkfQ_oC72vAnOiv4YohWh_5J4VSrKYxneAUv0uKBhDKhra1_trM5x5=w138-h92-k-no"
+    },
+    {
+      "name": "Ursa Beach",
+      "type": "Beach",
+      "rating": 4.8,
+      "reviews": 1839,
+      "category": "Beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4no3yRv49xNrgkAeqexuMHzhlUwsc_pbzHkaL7ozVqw1wqavxPW1qbtQrE0zja6kFq9EyN5WMtznTh2HJG0y-OuiTO5lPzqb3AAN6x8Y3r7USbJxwEgJa6_JOeOLclxADywOhdzR=w138-h92-k-no"
+    },
+    {
+      "name": "Cape Roca",
+      "type": "Scenic spot",
+      "rating": 4.7,
+      "reviews": 64237,
+      "category": "Scenic spot",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrdnesXG6i13fkucJQhFaT__i05sKHgnk3JtGI555GXQi64NuC783urpe3aj2koUmwH9do8hRaGYMYzMrbz7oQ-Xttw3oQimIdMCnA3A4-yMy3TIwajmOhjcUGR91vcBK3S5fMnPgXDgptJ=w122-h92-k-no"
+    },
+    {
+      "name": "Ericeira",
+      "type": "City",
+      "category": "Portugal",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nr5xoAyTfHB8VPvlp8YjkNNb0C5PBi2ZoM1meAtQ0YY4zaVoYYmeiwvGEa0g5ArURRF94YMqp8uEmPpAdocuhhok1Mn_ZF3k8vsrR7Yp_hmz82_eQFRmuw3ADpDGq1PlDiGcp1Q=w163-h92-k-no"
+    },
+    {
+      "name": "Cascata dos Anjos",
+      "type": "Tourist attraction",
+      "rating": 4.5,
+      "reviews": 6847,
+      "category": "Tourist attraction",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqVW03mgyIqv31BlRrrGIWVjimgt2UQU2jK7zvOP7fVWB6mmtPUEiuny9XPJdQ_lvKgMKCoGBllOJev8u6nY6XK62Oi_61pD973Y5YRDex3aiDXtM0fCFo9Jo9K_YZonlkJ4yPB=w80-h106-k-no"
+    },
+    {
+      "name": "Vereda da Ponta de São Lourenço (PR8)",
+      "type": "Hiking area",
+      "rating": 4.8,
+      "reviews": 12640,
+      "category": "Hiking area",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npzLJ3qK2qgbPSiSb6FptP9hEvN1FMPoOXP0WmUBneeIYJv9XIu-VlF7JMknVEy3qFkarWacMevf6lbi7YzL7AjdruFqpT1Xhz5IBDEsvgnc9aGonr_R7Be8xjXvrMniAlVZ41pgA=w138-h92-k-no"
+    },
+    {
+      "name": "Mercado dos Lavradores (farmers' market)",
+      "type": "Market",
+      "rating": 4.1,
+      "reviews": 26711,
+      "price": "Moderately priced",
+      "category": "Produce market",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npUmO1ch6cgF1TIjtDH0gX3c1TQi2orNx04GoSfWrs1gPNuLt0NfT_waNQGPLF3swQ-vIpbf1d7QcGDeVGuQp_JMYqmpUHUIys8wtGkSefDtSD8Zj03tkVf4hvFH6FpTpzTXJR4xg=w122-h92-k-no"
+    },
+    {
+      "name": "Pico Ruivo",
+      "type": "Mountain peak",
+      "rating": 4.8,
+      "reviews": 2728,
+      "category": "Mountain peak",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrDgOxNJpK9uk0pDubCsI3PEEW5ubuSg3zTcKmRn7x9euJGwe4wLxDde5tVL7uAta1gRt3dHfFHyRRexq0aaNuXdT52m0bxcvI0q6UPpHTtf_-QV66OW6t2CPnSp3lJBhWROdsq=w80-h119-k-no"
+    },
+    {
+      "name": "Miradouro da Garganta Funda",
+      "type": "Observation deck",
+      "rating": 4.4,
+      "reviews": 716,
+      "category": "Observation deck",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4noQdSG8GfTkjz1NMcjB8AUD1TFE3kssvwCZIx1Wyx4q2d-uYuVSsH0DPaXbu7VdSDmOtYwBY_RDRoqX6BmjwmWcLOqwCa1u-HAELog96QioX8Yy2agtsu6lgcRvIOWKsjBrpB-8fA=w80-h142-k-no"
+    },
+    {
+      "name": "Pico do Arieiro",
+      "type": "Mountain peak",
+      "rating": 4.8,
+      "reviews": 5177,
+      "category": "Mountain peak",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nouKgwwU4jl80iSiP-4kvTITW3TE0FjmDyDWxjKd5ZZmczsNaK0aHN2ImvB7l-OOuPRdFM8mQFk5jLo3iY8wR-ETXHX4jdnY_Bz42bcPQHc_xQhI68z1khVbhYKf8gTtp3JcxU3=w137-h92-k-no"
+    },
+    {
+      "name": "Estalagem da Ponta do Sol",
+      "type": "Hotel",
+      "rating": 4.6,
+      "reviews": 1010,
+      "category": "4-star hotel",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4noafEbS-HV17M1UHl8uNAjwhG08vkVJvT6KHM0aE70Ul_VfoU2vIGle6-8YPbW71vmI-AZtAr1itpc72NEHHCC8sVeyY3oExWKpIYlb4WXy3VPIlU0wGUnD9oUYQQtwhKwvkWNnhA=w138-h92-k-no"
+    },
+    {
+      "name": "Miradouro da Ponta do Rosto",
+      "type": "Observation deck",
+      "rating": 4.8,
+      "reviews": 3140,
+      "category": "Observation deck",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqC1nOQJcxrypBQIZTAo2-LoXRxFiBWeRhSlIPXZWVRhsuwgklZ1zfSDpJPw1aYMx8H49RPHANESsomDmUCcbiSY5J4CrIiok_1gbLEpbBna3QFYBQVXwGls_3FcV_VgQHMfjg=w137-h92-k-no"
+    },
+    {
+      "name": "Praia de Machico",
+      "type": "Beach",
+      "rating": 4.4,
+      "reviews": 5587,
+      "category": "Beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4noRBm-bzap0S9W12Hf_T5PYhY7wc8IktS136AXF79iW09X8I0Cp4sjChmNTsANPLwS9OpgVK4BUkTIJvgJ_b97aJBCeq6NA9NY-0XTF9YhPZ6OzPyFt7nKN75nsvkcf1LjuP8xU=w122-h92-k-no"
+    },
+    {
+      "name": "Prainha do Caniçal",
+      "type": "Beach",
+      "rating": 4.6,
+      "reviews": 1356,
+      "category": "Beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrDzZtCz0vBDW28lkXkibq7Su5LvZFdfl6f_i92G-nrUJurzlm5UgKX1UZgT38MIIyfS7nsZJrHCiWuqPsQPIRXTYM_xp_qazK2vlybW1Q0jdHjop-l-yR3T9a5NhKnAP-5wrLYMw=w163-h92-k-no"
+    },
+    {
+      "name": "Fanal Forest",
+      "type": "National forest",
+      "rating": 4.8,
+      "reviews": 4975,
+      "category": "National forest",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4no9mww0xU3Ct44uc0zykVyJD0zYyucblorsXR4LUUkBhx1Xv4uRBR3L2OP0nnHs1qer_zMZt3yhBY_uI4adUMkakQYeQvTExVJnPVsDBXQ0gCJB2ao9CjVum3p25kvzy6GnrmjZvvv94lc=w122-h92-k-no"
+    },
+    {
+      "name": "Praia da Calheta beach",
+      "type": "Beach",
+      "rating": 4.4,
+      "reviews": 11945,
+      "category": "Public beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4noafEbS-HV17M1UHl8uNAjwhG08vkVJvT6KHM0aE70Ul_VfoU2vIGle6-8YPbW71vmI-AZtAr1itpc72NEHHCC8sVeyY3oExWKpIYlb4WXy3VPIlU0wGUnD9oUYQQtwhKwvkWNnhA=w138-h92-k-no"
+    },
+    {
+      "name": "Bica da Cana peak and viewpoint",
+      "type": "Scenic spot",
+      "rating": 4.8,
+      "reviews": 828,
+      "category": "Scenic spot",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4np0Ebn1OIfC9LwZ-cjG91YZA26w-IWrGeqp4HWH5g2aWti7cr576QD5WeqVU5aXy70OJ1cNIk3V-bPYIYv1o7Tm6JBUFZksl8bUXK542XZx0GOEMpLAVxwI4uQELZc4-4EwA79N=w122-h92-k-no"
+    },
+    {
+      "name": "Porto das Salemas",
+      "type": "Tourist attraction",
+      "rating": 4.6,
+      "reviews": 559,
+      "category": "Tourist attraction",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrx_fRJAe1rmTiZoT2EdGX0jKtb0v2fqBvcYNSvJMFm24z4I3kRtfLN_qehWtmQ6Pbw-pYiIPnEiCpwXNN53UV15nf6WkksfnyZbkY-OSdwdkfRuS21NDDGhUUyN8pktWLsS5Z69Q=w122-h92-k-no"
+    },
+    {
+      "name": "Lombo do Mouro viewpoint",
+      "type": "Observation deck",
+      "rating": 4.8,
+      "reviews": 157,
+      "category": "Observation deck",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4no0oFkpXIlzSfDhUj2xaT31-8oVCylOu8rphPAz8VvEyQhNBpVOFHUPdK6Y7n1_RQZnnyyHqnN6z2l8CLoHmAtq0SgngGk1Ucf1VjWuy7PXnKEx1OKhRmAY1u5CytxIeueZY2lP=w80-h106-k-no"
+    },
+    {
+      "name": "Porto Moniz Natural Swimming Pools",
+      "type": "Swimming pool",
+      "rating": 4.7,
+      "reviews": 14153,
+      "category": "Outdoor swimming pool",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4np4Y7DmJ1Bz8HcL5GBJFUr9Ttzs6o96L_rCUG2B5sLKYcS_Tzrd85ga7gunVTsI18drSenbZXlO-kMUUZGbDyM_h3UA8gVp1RmK-51V8an-t-p6yAmQVOsQ0s1jy91xwK50ve4qoQ=w122-h92-k-no"
+    },
+    {
+      "name": "Black Beach",
+      "type": "Beach",
+      "rating": 4.6,
+      "reviews": 6791,
+      "category": "Public beach",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nr0RXoockVPBtvVuKcu_gjUhMQymHRUf11uZIhgHKMxXelWhy8Wk7m2o56jxzB4CZXR8qVnjz5g6PEB9AtjArSS6B7Di9ZtCavkNuuN5JxXaCfrdA9CJExd7TWqAY_L_EmFXTY=w122-h92-k-no"
+    },
+    {
+      "name": "Miradouro do Véu da Noiva",
+      "type": "Observation deck",
+      "rating": 4.5,
+      "reviews": 8632,
+      "category": "Observation deck",
+      "image": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4no0oFkpXIlzSfDhUj2xaT31-8oVCylOu8rphPAz8VvEyQhNBpVOFHUPdK6Y7n1_RQZnnyyHqnN6z2l8CLoHmAtq0SgngGk1Ucf1VjWuy7PXnKEx1OKhRmAY1u5CytxIeueZY2lP=w80-h106-k-no"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "tripName": "Portugal",
+  "tripSubtitle": "September 24 → October 18, 2025",
+  "locations": [
+    {
+      "name": "Portugal",
+      "startDate": "2025-09-24"
+    },
+    {
+      "name": "Madeira",
+      "startDate": "2025-10-09"
+    }
+  ],
+  "regionHints": {
+    "mainRegion": "Portugal",
+    "secondaryRegion": "Madeira",
+    "secondaryRegionStartDate": "2025-10-09"
+  }
+}
