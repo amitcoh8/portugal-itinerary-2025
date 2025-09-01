@@ -1,6 +1,7 @@
 import React from "react";
 import type { SuggestedCategory, SuggestedDay, SuggestedItem, TripConfig } from "@/src/types";
 import { loadTripConfig, loadSuggestedDays, getRegionForDate } from "@/src/config";
+import { getVisitedPlaces, toggleVisitedPlace } from "@/src/utils";
 
 function formatDate(dateString: string) {
   const d = new Date(dateString);
@@ -35,7 +36,7 @@ function getCategoryIcon(category: SuggestedCategory) {
     hike: "🥾",
     beach: "🏖️",
     food: "🍽️",
-    view: "👁️",
+    view: "🌄",
     town: "🏘️",
     winery: "🍷",
     monument: "🏛️",
@@ -54,6 +55,7 @@ export default function SuggestedItinerary() {
   const [config, setConfig] = React.useState<TripConfig | null>(null);
   const [imageByKey, setImageByKey] = React.useState<Record<string, string>>({});
   const [loading, setLoading] = React.useState(true);
+  const [visitedPlaces, setVisitedPlaces] = React.useState<Set<string>>(new Set());
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -75,6 +77,19 @@ export default function SuggestedItinerary() {
     };
     loadData();
   }, []);
+
+  // Load visited places from localStorage
+  React.useEffect(() => {
+    setVisitedPlaces(getVisitedPlaces());
+  }, []);
+
+  // Toggle visited status for a place
+  const handleToggleVisited = (placeId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const updatedVisited = toggleVisitedPlace(placeId);
+    setVisitedPlaces(new Set(updatedVisited));
+  };
 
   function buildSearchQuery(item: SuggestedItem, dateISO: string): string {
     if (!config) return [item.nameLocal, item.nameEn, item.category].filter(Boolean).join(" ");
@@ -146,7 +161,17 @@ export default function SuggestedItinerary() {
         <section id={`date-${day.date}`} key={day.date} className="break-inside-avoid-page">
           <div className="mb-4">
             <h2 className="text-2xl font-bold text-gray-900">{formatDate(day.date)}</h2>
-            <p className="text-gray-500">{formatWeekday(day.date)}</p>
+            <div className="flex items-center gap-2 text-gray-500">
+              <p>{formatWeekday(day.date)}</p>
+              {day.area && (
+                <>
+                  <span>•</span>
+                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                    {day.area}
+                  </span>
+                </>
+              )}
+            </div>
             {day.description && (
               <p className="text-gray-700 mt-2 text-sm leading-relaxed">{day.description}</p>
             )}
@@ -155,20 +180,37 @@ export default function SuggestedItinerary() {
             {day.items.map((it) => {
               const key = `${day.date}-${it.link}`;
               const imageUrl = it.image ?? imageByKey[key];
+              const isVisited = visitedPlaces.has(it.link);
               return (
-                <li key={key} className="rounded-xl border border-gray-200 bg-white shadow-sm">
+                <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
+                  {/* Visited toggle button */}
+                  <button
+                    onClick={(e) => handleToggleVisited(it.link, e)}
+                    className={`absolute top-2 left-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all z-10 shadow-sm ${
+                      isVisited 
+                        ? 'bg-green-500 border-green-500 text-white' 
+                        : 'bg-white border-gray-300 hover:border-green-400 hover:bg-green-50'
+                    }`}
+                    title={isVisited ? 'Mark as not visited' : 'Mark as visited'}
+                  >
+                    {isVisited && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </button>
                   <a
                     href={it.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-4 hover:bg-gray-50 transition-colors group"
+                    className={`block p-4 hover:bg-gray-50 transition-colors group ${isVisited ? 'filter grayscale-[0.3]' : ''}`}
                   >
                     <div className="flex gap-4">
                       <div className="w-28 h-20 flex-shrink-0 bg-gray-100 rounded-md relative">
                         <img
                           src={imageUrl || getGenericImage(it.category)}
                           alt={it.nameLocal}
-                          className="w-full h-full object-cover rounded-md"
+                          className={`w-full h-full object-cover rounded-md ${isVisited ? 'filter grayscale-[0.5]' : ''}`}
                           loading="lazy"
                         />
                         {!imageUrl && (

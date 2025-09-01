@@ -75,6 +75,7 @@ export type SuggestedItem = {
 
 export type SuggestedDay = {
   date: string;
+  area?: string;
   description?: string;
   items: SuggestedItem[];
 };
