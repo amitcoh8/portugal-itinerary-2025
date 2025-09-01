@@ -2,15 +2,61 @@ import React from "react";
 import type { SuggestedCategory, SuggestedDay, SuggestedItem, TripConfig } from "@/src/types";
 import { loadTripConfig, loadSuggestedDays } from "@/src/config";
 import { getVisitedPlaces, toggleVisitedPlace } from "@/src/utils";
+import { geocodePlaceBrowser, type Coordinates, calculateDistance, getCurrentLocation } from "@/src/geocoding";
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+function normalizeQuery(text: string): string {
+  return text
+    .trim()
+    .replace(/\s+/g, ' ') // collapse spaces
+    .replace(/['"'""`]/g, '') // remove quotes
+    .replace(/[\[\](){}]/g, '') // remove brackets
+    .replace(/[àáâãäåæ]/gi, 'a')
+    .replace(/[èéêë]/gi, 'e')
+    .replace(/[ìíîï]/gi, 'i')
+    .replace(/[òóôõöø]/gi, 'o')
+    .replace(/[ùúûü]/gi, 'u')
+    .replace(/[ç]/gi, 'c')
+    .replace(/[ñ]/gi, 'n')
+    .replace(/[ý]/gi, 'y');
+}
+
+async function geocodeWithFallbacks(
+  item: SuggestedItem, 
+  area: string, 
+  mainRegion: string
+): Promise<Coordinates | null> {
+  // Use existing coordinates if available
+  if (item.coordinates) {
+    return { lat: item.coordinates.lat, lng: item.coordinates.lng };
+  }
+
+  const variants = [
+    { name: item.nameLocal, region: area, label: "nameLocal + area" },
+    { name: item.nameEn, region: area, label: "nameEn + area" },
+    { name: item.nameLocal, region: mainRegion, label: "nameLocal + mainRegion" },
+    { name: item.nameEn, region: mainRegion, label: "nameEn + mainRegion" },
+  ].filter(v => v.name && v.name.trim());
+
+  for (const variant of variants) {
+    const normalizedName = normalizeQuery(variant.name);
+    const normalizedRegion = normalizeQuery(variant.region);
+    
+    const coords = await geocodePlaceBrowser(normalizedName, normalizedRegion);
+    if (coords) {
+      return coords;
+    }
+
+    await delay(1000);
+  }
+
+  return null;
+}
 
 function formatDate(dateString: string) {
   const d = new Date(dateString);
   return d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
-}
-
-function formatWeekday(dateString: string) {
-  const d = new Date(dateString);
-  return d.toLocaleDateString("en-US", { weekday: "long" });
 }
 
 function getGenericImage(category: SuggestedCategory): string {
@@ -65,6 +111,9 @@ export default function SuggestedItinerary() {
   const [visitedPlaces, setVisitedPlaces] = React.useState<Set<string>>(new Set());
   const [locationGroups, setLocationGroups] = React.useState<LocationGroup[]>([]);
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({});
+  const [coordsByItem, setCoordsByItem] = React.useState<Record<string, Coordinates | null | false>>({});
+  const [currentLocation, setCurrentLocation] = React.useState<Coordinates | null>(null);
+  const triedFallbackRef = React.useRef(false);
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -77,13 +126,33 @@ export default function SuggestedItinerary() {
         const sortedDays = [...suggestedData];
         setDays(sortedDays);
       } catch (error) {
-        console.error("Failed to load configuration or suggested activities:", error);
+        // Failed to load configuration or suggested activities
       } finally {
         setLoading(false);
       }
     };
     loadData();
   }, []);
+
+  // Get current location (browser geolocation)
+  React.useEffect(() => {
+    (async () => {
+      const loc = await getCurrentLocation();
+      if (loc) setCurrentLocation(loc);
+    })();
+  }, []);
+
+  // Fallback: geocode main region if geolocation not available/denied
+  React.useEffect(() => {
+    if (currentLocation || triedFallbackRef.current === true) return;
+    if (!config) return;
+    triedFallbackRef.current = true;
+    const region = (config.regionHints?.mainRegion || "Portugal").trim();
+    (async () => {
+      const fallback = await geocodePlaceBrowser(region);
+      if (fallback) setCurrentLocation(fallback);
+    })();
+  }, [currentLocation, config]);
 
   // Load visited places from localStorage
   React.useEffect(() => {
@@ -138,6 +207,50 @@ export default function SuggestedItinerary() {
 
     setLocationGroups(groups);
   }, [days]);
+
+  // When a section opens, fetch coordinates for its items (rate limited)
+  React.useEffect(() => {
+    const items: Array<{ item: SuggestedItem; area: string }> = [];
+    for (const [key, isOpen] of Object.entries(openSections)) {
+      if (!isOpen) continue;
+      const [area, category] = key.split(":");
+      const group = locationGroups.find(g => g.area === area);
+      if (!group) continue;
+      for (const item of group.allItems) {
+        if (item.category !== (category as SuggestedCategory)) continue;
+        if (coordsByItem[item.link] !== undefined) continue; // already loaded or loading
+        items.push({ item, area });
+      }
+    }
+
+    if (items.length === 0) return;
+
+    // mark as loading
+    const loadingUpdate: Record<string, null> = {};
+    for (const it of items) loadingUpdate[it.item.link] = null;
+    setCoordsByItem(prev => ({ ...prev, ...loadingUpdate }));
+
+    (async () => {
+      for (const entry of items) {
+        const it = entry.item;
+        const name = it.nameLocal || it.nameEn;
+        if (!name) {
+          setCoordsByItem(prev => ({ ...prev, [it.link]: false }));
+          continue;
+        }
+        
+        const mainRegion = config?.regionHints?.mainRegion || "Portugal";
+        const coords = await geocodeWithFallbacks(it, entry.area, mainRegion);
+        
+        setCoordsByItem(prev => ({ ...prev, [it.link]: coords ? coords : false }));
+        
+        // Only delay if there are more items to process
+        if (entry !== items[items.length - 1]) {
+          await delay(1000);
+        }
+      }
+    })();
+  }, [openSections, locationGroups, coordsByItem, config]);
 
   // Toggle visited status for a place
   const handleToggleVisited = (placeId: string, event: React.MouseEvent) => {
@@ -271,9 +384,26 @@ export default function SuggestedItinerary() {
                             const key = it.link;
                             const imageUrl = it.image ?? imageByKey[key];
                             const isVisited = visitedPlaces.has(it.link);
+                            const coordStatus = coordsByItem[key];
 
                             return (
                               <li key={key} className={`rounded-xl border border-gray-200 bg-white shadow-sm relative ${isVisited ? 'opacity-50' : ''}`}>
+                                {/* Distance/Status pill (top-right) */}
+                                {coordStatus === null && (
+                                  <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
+                                    Locating…
+                                  </div>
+                                )}
+                                {coordStatus === false && (
+                                  <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
+                                    Failed to locate
+                                  </div>
+                                )}
+                                {currentLocation && coordStatus && (
+                                  <div className="absolute top-2 right-4 text-xs text-gray-600 bg-gray-100 bg-opacity-80 px-2 py-1 rounded-full z-10 backdrop-blur-sm">
+                                    {`${calculateDistance(currentLocation, coordStatus).toFixed(1)}km`}
+                                  </div>
+                                )}
                                 {/* Visited toggle button */}
                                 <button
                                   onClick={(e) => handleToggleVisited(it.link, e)}
